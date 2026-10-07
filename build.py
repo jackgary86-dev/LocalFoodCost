@@ -112,7 +112,8 @@ def flipp_rows():
             continue
         seen.add(key)
         rows.append([cat, store, name, price, unit, "; ".join(notes), it["valid_from"][:10], it["valid_to"][:10],
-                     price if unit == "/lb" else None])
+                     price if unit == "/lb" else None,
+                     f"https://flipp.com/en-us/longview-tx/item/{it['id']}?postal_code={ZIP}"])
     starts = collections.Counter(r[6] for r in rows)
     return rows, starts
 
@@ -147,7 +148,7 @@ def main():
           ".filter(x=>x.c&&x.c.pct<=-10).sort((a,b)=>a.c.pct-b.c.pct);const per={},pick=[];"
           "for(const x of sc){if((per[x.r[0]]=(per[x.r[0]]||0)+1)>2)continue;pick.push(x);if(pick.length==5)break}"
           "pick.forEach((x,i)=>console.log(`${i+1}. ${-x.c.pct}% below normal: ${x.r[2]} at ${x.r[1]}, $${x.r[3]}`))")
-    out = subprocess.run(["node", "-e", js], capture_output=True, text=True)
+    out = subprocess.run(["node", "-"], input=js, capture_output=True, text=True, encoding="utf-8")
     print(out.stdout or out.stderr)
 
 
