@@ -1,0 +1,22 @@
+{
+ "about": "Corrections from checking store websites by hand. build.py applies them only to the ad week named in 'week', so stale checks drop off when the next ad starts. Each item matches a row by store and a piece of its name; 'name' replaces the item name (usually to add the package size) and 'note' is added to the row's note.",
+ "week": "2026-10-07",
+ "checked": "2026-10-07",
+ "items": [
+  {"store": "FRESH by Brookshire's", "match": "Boneless Ribeye Steak", "name": "Prime Boneless Ribeye Steak", "note": "store website (Longview #803): USDA Prime; Choice ribeye is $23.99/lb"},
+  {"store": "FRESH by Brookshire's", "match": "Hill's Premium Meats Thick Sliced Bacon", "name": "Hill's Premium Meats Thick Sliced Bacon, 3 lb", "note": "store website: $3.33/lb, reg. $19.99"},
+  {"store": "FRESH by Brookshire's", "match": "Just Bare Hand-Trimmed, Boneless, Skinless Chicken Thighs", "name": "Just Bare Boneless Skinless Chicken Thighs, 1.25 lb", "note": "store website: $3.99/lb, reg. $7.99"},
+  {"store": "FRESH by Brookshire's", "match": "Cold Water Lobster Tail", "note": "store website: reg. $10.49"},
+  {"store": "FRESH by Brookshire's", "match": "Boneless Chuck Roast", "note": "store website shows $6.49/lb; the ad price may be in-store only"},
+  {"store": "FRESH by Brookshire's", "match": "Snow Crab Clusters", "note": "store website shows $15.99/lb; the ad price may be in-store only"},
+  {"store": "Sprouts", "match": "Sprouts Organic Pasture Raised Eggs", "name": "Sprouts Organic Pasture Raised Eggs, 24 ct", "note": "store website: reg. $12.99 ($5.00 a dozen on sale)"},
+  {"store": "Sprouts", "match": "Force of Nature Ground Chicken", "name": "Force of Nature Ground Chicken, 16 oz", "note": "store website: reg. $12.99"},
+  {"store": "Sprouts", "match": "Wild Pat Wild-Caught", "note": "store website: reg. $12.99/lb"},
+  {"store": "Sprouts", "match": "Sprouts All-Natural Grain-Fed 85% Lean", "note": "store website: 85% lean is $8.99 for 1 lb"},
+  {"store": "Sprouts", "match": "Sprouts Marinated Chicken Wings", "note": "store website: reg. $5.99/lb"},
+  {"store": "Sprouts", "match": "Sprouts Boneless Skinless Chicken Breasts", "note": "store website: about $9.09 a pack before the deal"},
+  {"store": "Sprouts", "match": "Sprouts St. Louis Style Pork Ribs", "note": "store website: St. Louis ribs about $19.77 a pack, Angus ribeye about $19.54 a pack, before the deal"},
+  {"store": "Sprouts", "match": "Sprouts Frozen Fish Fillets", "note": "store website: tilapia 2 lb $18.99, Atlantic cod 2 lb $32.98, before the deal"},
+  {"store": "Sprouts", "match": "Colossal Raw Peeled and Deveined Grilling Shrimp", "note": "not listed on the store website"}
+ ]
+}

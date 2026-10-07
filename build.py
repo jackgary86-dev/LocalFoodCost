@@ -118,6 +118,27 @@ def flipp_rows():
     return rows, starts
 
 
+def apply_verified(rows, week_start):
+    """Apply hand-checked corrections from verified.json when they're for this ad week."""
+    path = HERE / "verified.json"
+    if not path.exists():
+        return 0
+    v = json.loads(path.read_text(encoding="utf-8"))
+    if v.get("week") != week_start:
+        return 0
+    applied = 0
+    for fix in v.get("items", []):
+        for r in rows:
+            if r[1] == fix["store"] and fix["match"].lower() in r[2].lower():
+                if fix.get("name"):
+                    r[2] = fix["name"]
+                if fix.get("note") and fix["note"] not in r[5]:
+                    r[5] = "; ".join(x for x in (r[5], fix["note"]) if x)
+                applied += 1
+                break
+    return applied
+
+
 def main():
     today = dt.date.today().isoformat()
     flipp, starts = flipp_rows()
@@ -128,6 +149,7 @@ def main():
     keep = [r for r in every["rows"] if not r[7] or r[7] > today]
     rows = flipp + keep
     start = starts.most_common(1)[0][0]
+    applied = apply_verified(rows, start)
     end = (dt.date.fromisoformat(start) + dt.timedelta(days=6)).isoformat()
     week = {"start": start, "end": end, "collected": today, "everyday_collected": every.get("collected")}
 
@@ -140,6 +162,7 @@ def main():
         raise SystemExit("Couldn't find the data constants in index.html.")
     page.write_text(html, encoding="utf-8")
     print(f"Week {start} to {end}: {len(flipp)} ad items + {len(keep)} everyday items from {len(set(r[1] for r in rows))} stores.")
+    print(f"Applied {applied} website-checked corrections from verified.json.")
 
     # Preview the Top 5 with the page's own scoring code.
     script = ('const DATA={mode:"snapshot"};const state={st:"TX"};'

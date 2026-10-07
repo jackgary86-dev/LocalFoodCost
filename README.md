@@ -22,6 +22,7 @@ Stores whose ads list ZIP 75601 but that have no Longview location (H-E-B, Sprin
 - `index.html`: the whole site. The data lives in two constants, `LONGVIEW` and `WEEK_OF`.
 - `build.py`: fetches this week's ads, merges `everyday.json`, rewrites those constants and prints the Top 5. Run `python -I build.py`.
 - `everyday.json`: everyday prices collected from store websites.
+- `verified.json`: corrections from checking store websites by hand (package sizes, regular prices, mismatches). `build.py` applies them only for the ad week they were checked, so they drop off when the next ad starts.
 - `.github/workflows/weekly-refresh.yml`: runs `build.py` every Wednesday and commits the result.
 
 Prices are a snapshot. Check the store's own ad before you shop.
