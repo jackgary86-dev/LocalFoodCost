@@ -142,7 +142,8 @@ def main():
     print(f"Week {start} to {end}: {len(flipp)} ad items + {len(keep)} everyday items from {len(set(r[1] for r in rows))} stores.")
 
     # Preview the Top 5 with the page's own scoring code.
-    script = html[html.index("const NORMS"):html.index("function cmpHtml")]
+    script = ('const DATA={mode:"snapshot"};const state={st:"TX"};'
+              + html[html.index("const BLS"):html.index("function cmpHtml")])
     js = (script + "\nconst L=" + json.dumps(rows) + ";const t='" + today + "';"
           "const sc=L.filter(r=>!r[7]||r[7]>t).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8]})}))"
           ".filter(x=>x.c&&x.c.pct<=-10).sort((a,b)=>a.c.pct-b.c.pct);const per={},pick=[];"
