@@ -282,6 +282,9 @@ const AC = `205 Birmingham AL|251 Mobile AL|256 Huntsville AL|334 Montgomery AL|
 const AREA = {};
 AC.split("|").forEach(s => { const m = s.match(/^(\d{3}) (.+) ([A-Z]{2})$/); if (m) AREA[m[1]] = { city: m[2], st: m[3] }; });
 
+/* Custom names shown in place of the city for some area codes. */
+const AREA_NICKNAMES = { "936": "Jim's Territory" };
+
 const STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
 
 /* ---------- Grocery chains by state ---------- */
@@ -389,7 +392,10 @@ function renderArea(){
   const where = $("whereText"), p = currentPlace();
   const valid = /^\d{3}$/.test(state.area);
   if (AREA[state.area]) {
-    where.innerHTML = `<strong>${esc(p.city)}, ${p.st}</strong><span>${STATES[p.st]} · area code ${state.area}</span>`;
+    const nick = AREA_NICKNAMES[state.area];
+    where.innerHTML = nick
+      ? `<strong>${esc(nick)}</strong><span>${esc(p.city)}, ${p.st} · area code ${state.area}</span>`
+      : `<strong>${esc(p.city)}, ${p.st}</strong><span>${STATES[p.st]} · area code ${state.area}</span>`;
   } else {
     const opts = Object.entries(STATES).map(([k,v]) => `<option value="${k}" ${state.st===k?"selected":""}>${v}</option>`).join("");
     where.innerHTML = `<span>${valid ? `${state.area} isn't in this list. Pick your state:` : "Enter a 3-digit area code, or pick a state:"}</span>
