@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="This week's grocery deals in Longview, TX: shrimp, fish, milk, eggs and meat at local stores, compared with normal prices.">
+<meta name="theme-color" content="#1f6b4f">
+<title>Area Code Deal Shopper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#f6f7f2}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+/* Layout: shelf-tag grocery circular. Area strip on top, deal board + trip ticket side by side, stacking on phones. */
+:root{
+  --paper:#f6f7f2; --card:#ffffff; --ink:#1b2420; --muted:#5b6861; --line:#d8ddd4;
+  --accent:#1f6b4f; --accent-soft:#e3efe8; --tag:#ffd84d; --tag-ink:#2a2300; --sale:#b8321c;
+  --warn:#9a5b00; --warn-soft:#fbefd9;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111614; --card:#19201c; --ink:#e7ece8; --muted:#9aa79f; --line:#2b3530;
+  --accent:#5cc59a; --accent-soft:#1d2e26; --tag:#e9c23a; --tag-ink:#1e1900; --sale:#ff7d64;
+  --warn:#f0b35a; --warn-soft:#2e2414; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111614; --card:#19201c; --ink:#e7ece8; --muted:#9aa79f; --line:#2b3530;
+  --accent:#5cc59a; --accent-soft:#1d2e26; --tag:#e9c23a; --tag-ink:#1e1900; --sale:#ff7d64;
+  --warn:#f0b35a; --warn-soft:#2e2414; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-family:var(--display);font-stretch:85%;text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:700;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Header */
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:3px solid var(--ink);padding-bottom:18px}
+.brand h1{font-size:clamp(30px,6vw,52px);font-stretch:70%;font-weight:900;line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+.brand p{margin:6px 0 0;color:var(--muted);max-width:46ch}
+.area{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.area label{display:grid;gap:4px}
+#areaCode{width:5.2ch;font-family:var(--display);font-size:44px;font-weight:800;font-stretch:90%;letter-spacing:.06em;text-align:center;padding:2px 6px;border:2px solid var(--ink);border-radius:6px;background:var(--card);font-variant-numeric:tabular-nums}
+.where{display:grid;gap:2px;min-width:0}
+.where strong{font-family:var(--display);font-size:24px;font-weight:800;font-stretch:85%}
+.where span{color:var(--muted);font-size:13px}
+.statepick{display:flex;gap:8px;align-items:center}
+.statepick select{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+
+/* Stores */
+.section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
+.section-head h2{font-size:24px;font-weight:800;font-stretch:85%}
+.section-head p{margin:0;color:var(--muted);font-size:13px;max-width:60ch}
+.stores{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.store{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.store .name{font-weight:700;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.kind{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.kind.discount{color:var(--sale)}
+.store .links{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
+.store a{color:var(--accent);font-weight:600;text-decoration:none}
+.store a:hover{text-decoration:underline}
+.sources{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.sources a{color:var(--accent);font-weight:600}
+
+/* Top 5 */
+.top5{display:grid;gap:12px}
+.top5-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.top5-list li{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;align-content:start;position:relative}
+.top5-list li:first-child{border-color:var(--tag);box-shadow:inset 0 0 0 1px var(--tag)}
+.top5-list .rank{font-family:var(--display);font-weight:900;font-stretch:75%;font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.top5-list .off{font-family:var(--display);font-weight:900;font-stretch:80%;font-size:30px;line-height:1;color:var(--accent)}
+.top5-list .off small{font-size:13px;font-weight:700;margin-left:3px}
+.top5-list .nm{font-weight:600;overflow-wrap:anywhere;line-height:1.3}
+.top5-list .meta{font-size:12px;color:var(--muted)}
+.top5-list .row2{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:2px}
+.top5-list .price{font-size:22px}
+.top5-list .add{padding:4px 10px;font-size:12px;border-radius:6px;border:1px solid var(--line);background:transparent;cursor:pointer}
+.top5-list .add:disabled{opacity:.55;cursor:default}
+
+/* Weekly prices */
+.week{display:grid;gap:14px}
+.week-meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:13px}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tab .n{font-weight:500;opacity:.7;margin-left:4px}
+.sortbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.addr{display:block;font-weight:500;font-size:11.5px;color:var(--accent);text-decoration:none;white-space:normal;max-width:24ch;line-height:1.35;margin-top:2px}
+.addr:hover{text-decoration:underline}
+.ptable .catlbl{display:block;font-weight:500;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.storebar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.storebar label{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer}
+.storebar input{accent-color:var(--accent)}
+.ptable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table.ptable{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+.ptable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 12px;border-bottom:2px solid var(--ink);font-weight:700}
+.ptable td{padding:8px 12px;border-bottom:1px dashed var(--line);vertical-align:middle}
+.ptable tr.cat td{background:var(--accent-soft);color:var(--accent);font-family:var(--display);font-weight:800;font-size:16px;font-stretch:85%;border-bottom:0;padding-block:6px}
+.ptable .p{white-space:nowrap;text-align:right}
+.ptable .p .price{font-size:20px}
+.ptable .p small{display:block;color:var(--muted);font-size:11px;font-weight:600}
+.ptable tr.low .p .price{background:var(--tag);color:var(--tag-ink);padding:2px 6px;border-radius:4px}
+.ptable .st{font-weight:700;white-space:nowrap}
+.ptable .nt{color:var(--muted);font-size:12px}
+.ptable .cmp{display:block;font-size:11px;font-weight:600;margin-top:3px;color:var(--muted)}
+.ptable .cmp b{font-weight:700}
+.ptable .cmp.below b{color:var(--accent)}
+.ptable .cmp.above b{color:var(--sale)}
+.ptable .add{padding:4px 10px;font-size:12px;border-radius:6px;border:1px solid var(--line);background:transparent;cursor:pointer;white-space:nowrap}
+.ptable .add:disabled{opacity:.55;cursor:default}
+
+/* Main grid */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
+
+/* Add form */
+form.add{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 1fr 1.2fr auto;gap:10px;align-items:end;margin-bottom:18px}
+form.add label{display:grid;gap:3px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+form.add input,form.add select{width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:6px;background:var(--paper);font-size:14px;min-width:0}
+.btn{padding:9px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+@media (max-width:760px){form.add{grid-template-columns:1fr 1fr}form.add .wide{grid-column:1/-1}form.add .btn{grid-column:1/-1}}
+
+/* Item groups */
+.groups{display:grid;gap:16px}
+.group{border-top:2px solid var(--ink);padding-top:8px}
+.group-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.group-head h3{font-size:20px;font-weight:800;font-stretch:85%;text-transform:capitalize}
+.group-head .save{font-size:13px;color:var(--muted)}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto;gap:12px;align-items:center;padding:8px 4px;border-bottom:1px dashed var(--line)}
+.row.expired{opacity:.45}
+.row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.row .who{min-width:0}
+.row .who b{display:block;font-weight:600;overflow-wrap:anywhere}
+.row .who small{color:var(--muted);font-size:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.price{font-family:var(--display);font-weight:800;font-size:24px;line-height:1;color:var(--sale);font-variant-numeric:tabular-nums;white-space:nowrap}
+.price sup{font-size:.55em;vertical-align:.7em;margin-left:1px}
+.price .d{font-size:.6em;vertical-align:.55em;margin-right:1px}
+.unit{font-variant-numeric:tabular-nums;font-size:13px;padding:3px 7px;border-radius:4px;border:1px solid var(--line);white-space:nowrap;text-align:right;min-width:86px}
+.row.best .unit{background:var(--tag);color:var(--tag-ink);border-color:var(--tag);font-weight:700}
+.chip{font-size:11px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ex{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:4px 6px;border-radius:4px}
+.del:hover{color:var(--sale)}
+@media (max-width:520px){.row{grid-template-columns:auto minmax(0,1fr) auto;row-gap:4px}.row .unit{grid-column:2;justify-self:start;min-width:0}.row .del{grid-column:3;grid-row:1}.row .price{grid-column:3;grid-row:2}}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px}
+.board-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* Trip ticket */
+aside.trip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:12px}
+@media (max-width:860px){aside.trip{position:static}}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.total .price{color:var(--ink);font-size:34px}
+.stop{display:grid;gap:2px}
+.stop b{font-size:14px}
+.stop ul{margin:0;padding:0;list-style:none;font-size:13px;color:var(--muted)}
+.stop li{display:flex;justify-content:space-between;gap:8px}
+.ai{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:8px}
+.ai-out{font-size:13px;white-space:pre-wrap;max-height:340px;overflow:auto;background:var(--paper);border-radius:6px;padding:10px}
+.note{font-size:12px;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:no-preference){.row{transition:background .2s}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">This week's circulars, compared</span>
+      <h1>Area Code<br>Deal Shopper</h1>
+      <p>Enter your area code to see the grocers near you, then log the sale prices you find. The board ranks every item by shelf-tag unit price.</p>
+    </div>
+    <div class="area">
+      <label for="areaCode"><span class="eyebrow">Area code</span>
+        <input id="areaCode" inputmode="numeric" maxlength="3" autocomplete="off" value="903" aria-describedby="whereText">
+      </label>
+      <div class="where" id="whereText" aria-live="polite"></div>
+    </div>
+  </header>
+
+  <section class="top5" id="topSec" aria-labelledby="topH" hidden>
+    <div class="section-head" style="margin:0">
+      <h2 id="topH">Top 5 deals this week</h2>
+      <p id="topNote">The biggest savings against the normal price, two at most per food type.</p>
+    </div>
+    <ol class="top5-list" id="topList"></ol>
+  </section>
+
+  <section class="week" id="weekSec" aria-labelledby="weekH" hidden>
+    <div class="section-head" style="margin:0">
+      <h2 id="weekH">This week's prices near Longview (75601)</h2>
+      <p>Weekly-ad sale prices for <span id="weekRange">Oct 7–13, 2026</span>, plus everyday prices at Walmart and Sam's Club and Natural Grocers' monthly specials. A yellow tag marks the lowest price per pound in each group. Under each price, "Normal" is the usual price for that product: the BLS average for the South region (August 2026) where the government tracks it, otherwise the median everyday price at Longview's Walmart and Sam's Club.</p>
+    </div>
+    <div class="tabs" id="catTabs" role="group" aria-label="Food type"></div>
+    <div class="sortbar" role="group" aria-label="Sort">
+      <span class="eyebrow">Sort by</span>
+      <button type="button" class="tab" data-sort="price" aria-pressed="true">Lowest price per lb</button>
+      <button type="button" class="tab" data-sort="pct" aria-pressed="false">Biggest % below normal</button>
+    </div>
+    <div class="storebar" id="storeBar" role="group" aria-label="Stores"></div>
+    <div class="ptable-wrap"><table class="ptable"><thead><tr><th>Store</th><th>Item</th><th class="p">Price</th><th></th></tr></thead><tbody id="ptBody"></tbody></table></div>
+    <div class="week-meta">
+      <span>Sources, collected <span id="collectedOn">Oct 7, 2026</span>: weekly ads listed on Flipp for ZIP 75601; walmart.com set to the Longview E Loop 281 Supercenter (everyday online prices, which can differ slightly from the shelf); dollargeneral.com online prices (may vary by store); samsclub.com set to the Longview club #6422 (membership required; meat sold by weight is shown per pound); the Natural Grocers October Health Hotline flyer.</span>
+      <span>For other stores, only sale items appear. Regular shelf prices aren't in their ads. Sprouts' "buy one, get one" deals have no fixed price.</span>
+      <span>Every store here has a Longview location; tap an address for directions. Super 1 Foods and Walmart have more than one store, and ad prices apply at each one.</span>
+      <span>Prices marked "store card" or "coupon" need that card or coupon.</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="storesH">
+    <div class="section-head">
+      <h2 id="storesH">Where to look this week</h2>
+      <p id="storesNote">Chains that operate in your state. Weekly ads usually turn over Wednesday or Sunday.</p>
+    </div>
+    <div class="stores" id="stores"></div>
+    <div class="sources">
+      <span>Also check:</span>
+      <a href="https://flipp.com/" target="_blank" rel="noopener">Flipp (all circulars by ZIP)</a>
+      <a href="https://www.ibotta.com/" target="_blank" rel="noopener">Ibotta rebates</a>
+      <a id="tgtgLink" href="https://www.toogoodtogo.com/" target="_blank" rel="noopener">Too Good To Go surprise bags</a>
+    </div>
+  </section>
+
+  <div class="main">
+    <section aria-labelledby="boardH">
+      <div class="section-head">
+        <h2 id="boardH">Deal board</h2>
+        <p>Deals you're considering. Tick the ones you'll buy. Yellow tag = cheapest per unit for that item.</p>
+      </div>
+      <form class="add" id="addForm" autocomplete="off">
+        <label class="wide">Item<input id="fItem" required placeholder="e.g. Large eggs" list="itemList"></label>
+        <label class="wide">Store<input id="fStore" required placeholder="Store" list="storeList"></label>
+        <label>Sale price<input id="fPrice" required type="number" step="0.01" min="0" placeholder="2.99"></label>
+        <label>Size<input id="fQty" required type="number" step="any" min="0" placeholder="12"></label>
+        <label>Unit<select id="fUnit">
+          <option value="oz">oz</option><option value="lb">lb</option><option value="g">g</option><option value="kg">kg</option>
+          <option value="floz">fl oz</option><option value="qt">qt</option><option value="gal">gal</option><option value="l">L</option>
+          <option value="ct">count</option><option value="dz">dozen</option></select></label>
+        <label>Ends<input id="fEnds" type="date"></label>
+        <button class="btn" type="submit">Add deal</button>
+      </form>
+      <datalist id="storeList"></datalist>
+      <datalist id="itemList"></datalist>
+      <div class="groups" id="groups"></div>
+      <div class="board-tools">
+        <button class="btn ghost" type="button" id="clearExamples">Remove example deals</button>
+        <button class="btn ghost" type="button" id="clearExpired">Remove expired</button>
+      </div>
+    </section>
+
+    <aside class="trip" aria-labelledby="tripH">
+      <span class="eyebrow" id="tripH">Your trip</span>
+      <div class="total"><span id="tripCount">0 items</span><span class="price num" id="tripTotal"></span></div>
+      <div id="tripStops" class="stops"></div>
+      <div class="ai" id="aiBox" hidden>
+        <b>Plan meals from these deals</b>
+        <p class="note">Claude suggests a week of meals using the deals you ticked (or the whole board if none are ticked).</p>
+        <button class="btn" type="button" id="aiBtn">Suggest meals</button>
+        <div class="ai-out" id="aiOut" hidden></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const LONGVIEW = [["Shrimp", "Sprouts", "Wild Pat Wild-Caught Peeled & Deveined Raw Red Argentine Shrimp", 11.99, "/lb", "", "2026-10-07", "2026-10-14", 11.99], ["Shrimp", "Sprouts", "Colossal Raw Peeled and Deveined Grilling Shrimp", null, "", "Buy one, get one 50% off regular retail of equal or lesser value", "2026-10-07", "2026-10-14", null], ["Shrimp", "Super 1 Foods", "Louisiana Select Wild Caught Gulf Shrimp", 4.97, "", "", "2026-10-07", "2026-10-14", null], ["Shrimp", "Super 1 Foods", "Gulf Jumbo Shrimp", 6.97, "/lb", "", "2026-10-07", "2026-10-14", 6.97], ["Shrimp", "Super 1 Foods", "Jumbo Gulf Shrimp", 7.97, "/lb", "", "2026-10-07", "2026-10-14", 7.97], ["Shrimp", "Kroger", "Kroger Large Peeled and Deveined Shrimp", 6.99, "/lb", "with store card", "2026-10-07", "2026-10-14", 6.99], ["Shrimp", "Brookshire's", "Premium Extra Large Cooked Shrimp", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Fish", "Albertsons", "Fresh Whole Atlantic Salmon Fillets, WATERFRONT BISTRO® Extra Jumbo Raw Shrimp 16-20 ct., or Rock Crab Clusters", 6.99, "/lb", "", "2026-10-07", "2026-10-14", 6.99], ["Fish", "Albertsons", "Fresh Atlantic Salmon Portions", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Fish", "Kroger", "Kroger Wild Pink Salmon Fillets", 11.99, "", "with store card", "2026-10-07", "2026-10-14", null], ["Fish", "Brookshire's", "Fresh Catfish Fillets", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Fish", "Kroger", "Fresh Catfish Fillets", 6.99, "/lb", "with store card", "2026-10-07", "2026-10-14", 6.99], ["Fish", "Sprouts", "Sprouts Frozen Fish Fillets", null, "", "Buy one, get one 50% off regular retail of equal or lesser value", "2026-10-07", "2026-10-14", null], ["Fish", "Sprouts", "Sprouts Wild-Caught Mahi Mahi Fillets", 8.99, "/lb", "", "2026-10-07", "2026-10-14", 8.99], ["Crab & crawfish", "FRESH by Brookshire's", "Snow Crab Clusters", 13.99, "/lb", "", "2026-10-07", "2026-10-14", 13.99], ["Crab & crawfish", "Albertsons", "Wild Alaskan Snow Crab Clusters", 13.99, "", "", "2026-10-07", "2026-10-14", null], ["Crab & crawfish", "Super 1 Foods", "Louisiana Select Crawfish Tail Meat", 11.97, "", "", "2026-10-07", "2026-10-14", null], ["Crab & crawfish", "Brookshire's", "Cold Water Lobster Tail", 6.99, "", "", "2026-10-07", "2026-10-14", null], ["Crab & crawfish", "FRESH by Brookshire's", "Cold Water Lobster Tail", 6.99, "each", "", "2026-10-07", "2026-10-14", null], ["Milk", "Brookshire's", "Promised Land Milk", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Milk", "Kroger", "Simple Truth Organic Milk", 3.99, "", "with store card", "2026-10-07", "2026-10-14", null], ["Milk", "Brookshire's", "Full Circle Market Organic Milk", 3.99, "", "", "2026-10-07", "2026-10-14", null], ["Eggs", "Kroger", "Kroger Eggs", 1.99, "each", "with digital coupon", "2026-10-07", "2026-10-14", null], ["Eggs", "Super 1 Foods", "Brookshire's Large Eggs", 0.97, "", "in-store coupon final price; reg. $1.77", "2026-10-07", "2026-10-14", null], ["Eggs", "Brookshire's", "Brookshire's Large Cage-Free Eggs", 1.99, "", "with coupon", "2026-10-07", "2026-10-14", null], ["Eggs", "Sprouts", "Sprouts Organic Pasture Raised Eggs", 9.99, "each", "", "2026-10-07", "2026-10-14", null], ["Beef", "Albertsons", "Fresh 80% Lean Ground Beef", 3.99, "/lb", "", "2026-10-07", "2026-10-14", 3.99], ["Beef", "Brookshire's", "93/7 Lean Ground Beef", 6.99, "", "", "2026-10-07", "2026-10-14", null], ["Beef", "ALDI", "Fresh 96/4 Ground Beef", 7.79, "", "", "2026-10-07", "2026-10-14", null], ["Beef", "Kroger", "Kroger 93% Lean Ground Beef", 6.99, "/lb", "with store card", "2026-10-07", "2026-10-14", 6.99], ["Beef", "Sprouts", "Sprouts All-Natural Grain-Fed 85% Lean or Grain-Fed 93% Lean Ground Beef", 8.99, "/lb", "", "2026-10-07", "2026-10-14", 8.99], ["Beef", "Kroger", "Simple Truth Organic Grass-Fed 90% Lean Ground Beef", 25, "", "with store card", "2026-10-07", "2026-10-14", null], ["Beef", "FRESH by Brookshire's", "Fresh Ground Chuck", 3.99, "/lb", "", "2026-10-07", "2026-10-14", 3.99], ["Beef", "FRESH by Brookshire's", "Boneless Ribeye Steak", 15.99, "/lb", "", "2026-10-07", "2026-10-14", 15.99], ["Beef", "Brookshire's", "Bone-In Ribeye Steak Or Boneless New York Strip Steak", 16.99, "/lb", "", "2026-10-07", "2026-10-14", 16.99], ["Beef", "Albertsons", "USDA Choice Beef Boneless Petite Sirloin Steaks", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Beef", "Brookshire's", "Boneless Chuck Eye Or Chuck Steak", 7.99, "/lb", "", "2026-10-07", "2026-10-14", 7.99], ["Beef", "Albertsons", "USDA Prime Beef New York Strip Steak", 19.99, "/lb", "", "2026-10-07", "2026-10-14", 19.99], ["Beef", "Sprouts", "Sprouts St. Louis Style Pork Ribs or Premium Angus Boneless Beef Ribeye Steak", null, "", "Buy one, get one 50% off regular retail of equal or lesser value", "2026-10-07", "2026-10-14", null], ["Beef", "Super 1 Foods", "Beef Brisket", 3.97, "/lb", "", "2026-10-07", "2026-10-14", 3.97], ["Beef", "Kroger", "Beef Brisket", 3.99, "/lb", "with store card", "2026-10-07", "2026-10-14", 3.99], ["Pork", "Albertsons", "Fresh Pork Butt Roast", 2.29, "", "", "2026-10-07", "2026-10-14", null], ["Beef", "FRESH by Brookshire's", "Boneless Chuck Roast", 4.99, "/lb", "", "2026-10-07", "2026-10-14", 4.99], ["Beef", "Brookshire's", "Boneless Chuck Roast", 6.99, "", "", "2026-10-07", "2026-10-14", null], ["Pork", "Super 1 Foods", "Hormel Always Tender Pork Butt Roast", 1.47, "/lb", "", "2026-10-07", "2026-10-14", 1.47], ["Beef", "Super 1 Foods", "Super Pack Boneless Round Rump Roast", 5.97, "/lb", "", "2026-10-07", "2026-10-14", 5.97], ["Beef", "Albertsons", "USDA Choice Beef Chuck Roast or Cross Rib Shoulder Roast", 5.99, "/lb", "", "2026-10-07", "2026-10-14", 5.99], ["Beef", "Brookshire's", "Family Pack Boneless Chuck Roast", 5.99, "", "", "2026-10-07", "2026-10-14", null], ["Chicken", "Super 1 Foods", "Super 1 Foods Chicken Thighs Or Drumsticks", 0.97, "/lb", "", "2026-10-07", "2026-10-14", 0.97], ["Chicken", "Albertsons", "Cheap Chicken", 5.99, "each", "", "2026-10-12", "2026-10-13", null], ["Chicken", "Super 1 Foods", "Tyson Chicken Wing Sections", 1.47, "/lb", "", "2026-10-07", "2026-10-14", 1.47], ["Chicken", "Albertsons", "Boneless, Skinless Chicken Breasts or Thighs", 1.27, "/lb", "", "2026-10-07", "2026-10-14", 1.27], ["Chicken", "ALDI", "Tyson Fresh Chicken Breasts", 1.79, "/lb", "", "2026-10-07", "2026-10-14", 1.79], ["Chicken", "Sprouts", "Sprouts Marinated Chicken Wings", 4.99, "/lb", "", "2026-10-07", "2026-10-14", 4.99], ["Chicken", "Sprouts", "Force of Nature Ground Chicken", 9.99, "each", "", "2026-10-07", "2026-10-14", null], ["Chicken", "Albertsons", "Fresh Diced Boneless Chicken Breast", 5.99, "/lb", "", "2026-10-07", "2026-10-14", 5.99], ["Chicken", "Albertsons", "Signature SELECT® Fresh Boneless Skinless Chicken Breasts Value Pack", 3.99, "/lb", "", "2026-10-07", "2026-10-14", 3.99], ["Chicken", "FRESH by Brookshire's", "Just Bare Hand-Trimmed, Boneless, Skinless Chicken Thighs", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Chicken", "Sprouts", "Sprouts Boneless Skinless Chicken Breasts", null, "", "Buy one, get one 50% off regular retail of equal or lesser value", "2026-10-07", "2026-10-14", null], ["Chicken", "Brookshire's", "Brookshire's Frozen Chicken", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Chicken", "Kroger", "Tyson Frozen Chicken", 5.99, "", "with store card", "2026-10-07", "2026-10-14", null], ["Chicken", "Super 1 Foods", "Brookshire's Frozen Chicken", 7.97, "", "", "2026-10-07", "2026-10-14", null], ["Chicken", "Kroger", "Just Bare Frozen Chicken", 14.99, "", "with store card", "2026-10-07", "2026-10-14", null], ["Pork", "Kroger", "Whole Pork Tenderloin", 2.99, "/lb", "with store card", "2026-10-07", "2026-10-14", 2.99], ["Pork", "Kroger", "Pork Back Ribs", 2.49, "/lb", "with digital coupon", "2026-10-07", "2026-10-14", 2.49], ["Pork", "Albertsons", "Fresh Pork Tenderloin", 3.99, "", "", "2026-10-07", "2026-10-14", null], ["Pork", "ALDI", "Fresh Pork Belly Slab", 2.99, "/lb", "", "2026-10-07", "2026-10-14", 2.99], ["Pork", "Albertsons", "St. Louis Style Pork Ribs", 2.99, "/lb", "", "2026-10-07", "2026-10-14", 2.99], ["Pork", "Super 1 Foods", "Super Pack Boneless Pork Chops", 2.97, "/lb", "", "2026-10-07", "2026-10-14", 2.97], ["Pork", "Kroger", "Smithfield Marinated Pork Loin Filet", 7, "", "with store card", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Hill's Premium Meats Ground Pork Sausage Or Mexican Style Chorizo", 3.99, "", "", "2026-10-07", "2026-10-14", null], ["Pork", "Super 1 Foods", "Brookshire's Baby Back Pork Ribs", 11.97, "", "", "2026-10-07", "2026-10-14", null], ["Beef", "Albertsons", "USDA Choice Beef Short Ribs", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Kroger", "Hormel Bacon", 5.99, "each", "with store card; reg. $6.99", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Smithfield Bacon", 3.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Brookshire's Bacon", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "John Morrell Sliced Bacon", 3.49, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "John Morrell Sliced Bacon", 4.47, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "THICK SLICED BACON", 14.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Kroger", "Simple Truth Bacon", 5, "", "with store card", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Brookshire's Thick Cut Bacon", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "FRESH by Brookshire's", "Hill's Premium Meats Thick Sliced Bacon", 9.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Brookshire's Thick Cut Bacon", 11.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "FRESH by Brookshire's", "Fresh-Made Sausage", 2.99, "/lb", "", "2026-10-07", "2026-10-14", 2.99], ["Bacon & sausage", "Brookshire's", "WHATABURGER SAUSAGE", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Eckrich Smoked Sausage Or Smok-Y Sausage Links", 2.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Eckrich Smoked Sausage Or Smok-Y Sausage Links", 2.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Smithfield Premium Sausage", 2.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Johnsonville Smoked Sausage", 3.49, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Mild Sausage Patty", 4.47, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Brookshire's Smoked Sausage", 4.47, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Brookshire's Smoked Sausage", 3.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Kroger", "Wright Smoked Sausage Links", 4.99, "", "with store card", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Brookshire's Smoked Sausage Or Bratwurst", 4.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Brookshire's Beef Smoked Sausage", 4.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Brookshire's Italian Sausage Or Bratwurst", 4.99, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Tony Chachere's Smoked Sausage Or Boudin", 4.49, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Super 1 Foods", "Tony Chachere's Smoked Sausage Or Boudin", 3.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Earl Campbell's Smoked Sausage Or Hot Link", 4.97, "", "", "2026-10-09", "2026-10-12", null], ["Bacon & sausage", "Super 1 Foods", "Smithfield Anytime Favorites Sliced Quarter Boneless Ham", 7.97, "", "", "2026-10-07", "2026-10-14", null], ["Bacon & sausage", "Brookshire's", "Smithfield Anytime Favorites Sliced Quarter Boneless Ham", 7.99, "", "", "2026-10-07", "2026-10-14", null], ["Turkey", "ALDI", "Kirkwood Fresh 93% Lean Turkey", 4.89, "", "", "2026-10-07", "2026-10-14", null], ["Shrimp", "Walmart", "Great Value Frozen Raw Large Peeled & Deveined Shrimp, 2 lb bag", 15.96, "each", "everyday price", "2026-10-07", "", 7.98], ["Shrimp", "Walmart", "Great Value Frozen Raw Jumbo Shell-On Easy Peel Shrimp, 2 lb bag", 16.62, "each", "everyday price", "2026-10-07", "", 8.31], ["Shrimp", "Walmart", "Great Value Frozen Cooked Medium Peeled & Deveined Shrimp, 12 oz", 6.97, "each", "everyday price", "2026-10-07", "", 9.29], ["Fish", "Walmart", "Great Value Frozen Swai Fillets, 4 lb bag", 14.97, "each", "everyday price", "2026-10-07", "", 3.74], ["Fish", "Walmart", "Great Value Frozen Tilapia Fillets, 2 lb bag", 8.87, "each", "everyday price", "2026-10-07", "", 4.43], ["Fish", "Walmart", "Great Value Frozen Catfish Fillets, 4 lb bag", 26.27, "each", "everyday price", "2026-10-07", "", 6.57], ["Fish", "Walmart", "Marketside Atlantic Salmon Portions, 2 lb bag (frozen)", 21.94, "each", "everyday price", "2026-10-07", "", 10.97], ["Milk", "Walmart", "Great Value Whole Milk, 1 gallon", 3.32, "each", "everyday price", "2026-10-07", "", null], ["Milk", "Walmart", "Great Value 2% Milk, 1 gallon", 3.32, "each", "everyday price", "2026-10-07", "", null], ["Milk", "Walmart", "Hiland Whole Milk, 1 gallon", 5.72, "each", "everyday price", "2026-10-07", "", null], ["Eggs", "Walmart", "Great Value Large White Eggs, 12 ct", 1.67, "each", "everyday price", "2026-10-07", "", null], ["Eggs", "Walmart", "Great Value Large White Eggs, 18 ct", 2.47, "each", "everyday price", "2026-10-07", "", null], ["Beef", "Walmart", "80/20 Ground Beef Chuck, 5 lb roll", 24.93, "each", "everyday price", "2026-10-07", "", 4.99], ["Beef", "Walmart", "93/7 Lean Ground Beef, 1 lb roll", 7.97, "each", "everyday price", "2026-10-07", "", 7.97], ["Chicken", "Walmart", "Covington Farms Chicken Leg Quarters, 10 lb bag", 5.96, "each", "everyday price", "2026-10-07", "", 0.6], ["Chicken", "Walmart", "Freshness Guaranteed Chicken Drumsticks, 5 lb bag", 5.94, "each", "everyday price", "2026-10-07", "", 1.19], ["Bacon & sausage", "Walmart", "Great Value Hickory Smoked Bacon, 16 oz", 4.24, "each", "everyday price", "2026-10-07", "", null], ["Bacon & sausage", "Walmart", "Eckrich Skinless Smoked Sausage, 14 oz", 3.46, "each", "everyday price", "2026-10-07", "", null], ["Turkey", "Walmart", "Jennie-O 93/7 Lean Ground Turkey, 16 oz", 5.56, "each", "everyday price", "2026-10-07", "", 5.56], ["Fish", "Natural Grocers", "Cannon Fish Wild Sockeye Salmon Fillet, 5 oz (frozen)", 5.85, "each", "", "2026-09-25", "2026-10-25", 18.72], ["Chicken", "Natural Grocers", "Mary's Organic Boneless Skinless Chicken Breast", 9.99, "/lb", "", "2026-09-25", "2026-10-25", 9.99], ["Beef", "Natural Grocers", "Niman Ranch Organic 80/20 Ground Beef, 16 oz", 10.99, "each", "{N}power members, in store, Oct 8–10 only; reg. $12.49", "2026-10-08", "2026-10-11", 10.99], ["Eggs", "Natural Grocers", "Free-Range Brown Eggs, dozen (limit 2)", 2.99, "each", "{N}power members", "2026-09-25", "2026-11-01", null], ["Bacon & sausage", "Natural Grocers", "Natural Grocers Hickory-Smoked Bacon, 12 oz", 5.99, "each", "{N}power members", "2026-09-25", "2026-11-01", null], ["Bacon & sausage", "Natural Grocers", "Charcutnuvo Pork Sausages, 10 oz", 5.79, "each", "{N}power members, Oct 8–10 only; reg. $7.15", "2026-10-08", "2026-10-11", null], ["Shrimp", "Sam's Club", "Member's Mark Jumbo Raw EZ Peel Shrimp, 21–30 ct, 3 lb (frozen)", 17.97, "each", "", "2026-10-07", "", 5.99], ["Shrimp", "Sam's Club", "Member's Mark Large Raw Shrimp, 31–40 ct, 3 lb (frozen)", 20.97, "each", "", "2026-10-07", "", 6.99], ["Shrimp", "Sam's Club", "Big Easy Wild Gulf Large Raw Shrimp, 2 lb (frozen)", 15.97, "each", "", "2026-10-07", "", 7.99], ["Shrimp", "Sam's Club", "Member's Mark Jumbo Raw Shrimp, 21–25 ct, 2 lb (frozen)", 16.97, "each", "", "2026-10-07", "", 8.48], ["Shrimp", "Sam's Club", "Member's Mark Medium Cooked Shrimp, 2 lb (frozen)", 16.47, "each", "", "2026-10-07", "", 8.23], ["Shrimp", "Sam's Club", "Member's Mark Jumbo Cooked Shrimp, 2 lb (frozen)", 18.97, "each", "", "2026-10-07", "", 9.48], ["Fish", "Sam's Club", "Member's Mark Tilapia Fillet Portions, 3 lb (frozen)", 12.64, "each", "instant savings, reg. $14.64", "2026-10-07", "", 4.21], ["Fish", "Sam's Club", "Member's Mark Catfish Fillets, 2.5 lb (frozen)", 20.94, "each", "", "2026-10-07", "", 8.38], ["Fish", "Sam's Club", "Member's Mark Atlantic Salmon Portions, 2.5 lb (frozen)", 24.94, "each", "", "2026-10-07", "", 9.98], ["Fish", "Sam's Club", "Member's Mark Skin-On Atlantic Salmon Fillet", 10.87, "/lb", "sold by weight; a pack runs about $33.91", "2026-10-07", "", 10.87], ["Fish", "Sam's Club", "Member's Mark Wild Sockeye Salmon Fillet", 14.62, "/lb", "sold by weight; a pack runs about $36.55", "2026-10-07", "", 14.62], ["Crab & crawfish", "Sam's Club", "Aqua Star Southern King Crab Legs & Claws, 2 lb (frozen)", 49.98, "each", "", "2026-10-07", "", 24.99], ["Milk", "Sam's Club", "Member's Mark Whole Milk, 1 gallon", 3.77, "each", "", "2026-10-07", "", null], ["Milk", "Sam's Club", "Member's Mark 2% Milk, 1 gallon", 3.77, "each", "", "2026-10-07", "", null], ["Eggs", "Sam's Club", "Member's Mark Cage-Free Large Eggs, 2 dozen", 4.82, "each", "$2.41 a dozen", "2026-10-07", "", null], ["Beef", "Sam's Club", "Member's Mark 80/20 Ground Chuck Roll", 5.72, "/lb", "sold by weight; a pack runs about $61.60", "2026-10-07", "", 5.72], ["Beef", "Sam's Club", "Member's Mark 80/20 Ground Beef", 5.92, "/lb", "sold by weight; a pack runs about $18.94", "2026-10-07", "", 5.92], ["Beef", "Sam's Club", "Member's Mark 93/7 Ground Beef", 6.32, "/lb", "sold by weight; a pack runs about $20.22", "2026-10-07", "", 6.32], ["Beef", "Sam's Club", "Member's Mark Choice Angus Whole Brisket", 5.88, "/lb", "sold by weight; a pack runs about $90.20", "2026-10-07", "", 5.88], ["Beef", "Sam's Club", "Member's Mark Choice Angus Boneless Chuck Roast", 7.47, "/lb", "sold by weight; a pack runs about $27.64", "2026-10-07", "", 7.47], ["Beef", "Sam's Club", "Member's Mark Choice Angus Boneless Ribeye Steak", 14.97, "/lb", "sold by weight; a pack runs about $52.40", "2026-10-07", "", 14.97], ["Chicken", "Sam's Club", "Member's Mark Chicken Drumsticks", 0.98, "/lb", "sold by weight; a pack runs about $4.89", "2026-10-07", "", 0.98], ["Chicken", "Sam's Club", "Member's Mark Bone-In Chicken Thighs", 1.28, "/lb", "sold by weight; a pack runs about $7.88", "2026-10-07", "", 1.28], ["Chicken", "Sam's Club", "Member's Mark Boneless Skinless Chicken Breast", 2.48, "/lb", "sold by weight; a pack runs about $14.26", "2026-10-07", "", 2.48], ["Chicken", "Sam's Club", "Member's Mark Boneless Skinless Chicken Thighs", 2.98, "/lb", "sold by weight; a pack runs about $16.72", "2026-10-07", "", 2.98], ["Chicken", "Sam's Club", "Member's Mark Boneless Skinless Chicken Breasts, 10 lb (frozen)", 26.98, "each", "", "2026-10-07", "", 2.7], ["Pork", "Sam's Club", "Member's Mark Whole Boneless Pork Loin", 2.48, "/lb", "sold by weight; a pack runs about $21.68", "2026-10-07", "", 2.48], ["Pork", "Sam's Club", "Member's Mark Bone-In Pork Boston Butt", 2.48, "/lb", "sold by weight; a pack runs about $22.30", "2026-10-07", "", 2.48], ["Pork", "Sam's Club", "Member's Mark Bone-In Pork Chops", 2.52, "/lb", "sold by weight; a pack runs about $20.16", "2026-10-07", "", 2.52], ["Pork", "Sam's Club", "Member's Mark Boneless Center-Cut Pork Chops", 2.98, "/lb", "sold by weight; a pack runs about $9.60", "2026-10-07", "", 2.98], ["Pork", "Sam's Club", "Member's Mark Whole Pork Spare Ribs", 2.98, "/lb", "sold by weight; a pack runs about $29.06", "2026-10-07", "", 2.98], ["Pork", "Sam's Club", "Member's Mark Whole Pork Loin Back Ribs", 3.48, "/lb", "sold by weight; a pack runs about $24.36", "2026-10-07", "", 3.48], ["Bacon & sausage", "Sam's Club", "Member's Mark Hickory Smoked Bacon, 3 × 1 lb", 13.26, "each", "", "2026-10-07", "", 4.42], ["Bacon & sausage", "Sam's Club", "Eckrich Smoked Sausage Family Pack, 42 oz", 6.98, "each", "", "2026-10-07", "", 2.66], ["Turkey", "Sam's Club", "Jennie-O 93/7 Ground Turkey, 2 × 2.5 lb", 22.77, "each", "", "2026-10-07", "", 4.55], ["Milk", "Dollar General", "Clover Valley Whole Milk, 1 gallon", 4.1, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", null], ["Milk", "Dollar General", "Clover Valley 2% Milk, 1 gallon", 4.1, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", null], ["Beef", "Dollar General", "Tyson Ground Beef, 1 lb", 5.85, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 5.85], ["Beef", "Dollar General", "Clover Valley 80/20 Ground Beef, 1 lb", 7.25, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 7.25], ["Beef", "Dollar General", "Clover Valley 73/27 Ground Beef, 1 lb", 6.5, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 6.5], ["Chicken", "Dollar General", "Tyson Boneless Skinless Chicken Breasts, 2 lb (frozen)", 8.5, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 4.25], ["Pork", "Dollar General", "Tyson Seasoned Boneless Pork Chops, 12 oz", 5.0, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 6.67], ["Bacon & sausage", "Dollar General", "Smithfield Thick Cut Bacon, 12 oz", 5.75, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", 7.67], ["Bacon & sausage", "Dollar General", "Eckrich Skinless Smoked Sausage, 14 oz", 3.95, "each", "dollargeneral.com price; may vary by store", "2026-10-07", "", null]];
+const WEEK_OF = {"start": "2026-10-07", "end": "2026-10-13", "collected": "2026-10-07", "everyday_collected": "2026-10-07"};
+/* ---------- Area codes → place ---------- */
+const AC = `205 Birmingham AL|251 Mobile AL|256 Huntsville AL|334 Montgomery AL|938 Huntsville AL|659 Birmingham AL|907 Anchorage AK|480 Mesa AZ|520 Tucson AZ|602 Phoenix AZ|623 Glendale AZ|928 Flagstaff AZ|479 Fort Smith AR|501 Little Rock AR|870 Jonesboro AR|209 Stockton CA|213 Los Angeles CA|310 Santa Monica CA|323 Los Angeles CA|408 San Jose CA|415 San Francisco CA|424 Torrance CA|442 Palm Springs CA|510 Oakland CA|530 Redding CA|559 Fresno CA|562 Long Beach CA|619 San Diego CA|626 Pasadena CA|628 San Francisco CA|650 San Mateo CA|657 Anaheim CA|661 Bakersfield CA|669 San Jose CA|707 Santa Rosa CA|714 Anaheim CA|747 Burbank CA|760 Palm Springs CA|805 Santa Barbara CA|818 Burbank CA|820 Santa Barbara CA|831 Salinas CA|858 San Diego CA|909 San Bernardino CA|916 Sacramento CA|279 Sacramento CA|925 Concord CA|949 Irvine CA|951 Riverside CA|341 Oakland CA|303 Denver CO|720 Denver CO|983 Denver CO|719 Colorado Springs CO|970 Fort Collins CO|203 New Haven CT|475 New Haven CT|860 Hartford CT|959 Hartford CT|302 Wilmington DE|202 Washington DC|771 Washington DC|239 Fort Myers FL|305 Miami FL|786 Miami FL|645 Miami FL|321 Orlando FL|407 Orlando FL|689 Orlando FL|352 Gainesville FL|386 Daytona Beach FL|561 West Palm Beach FL|727 St. Petersburg FL|754 Fort Lauderdale FL|954 Fort Lauderdale FL|772 Port St. Lucie FL|813 Tampa FL|656 Tampa FL|850 Tallahassee FL|448 Pensacola FL|863 Lakeland FL|904 Jacksonville FL|324 Jacksonville FL|941 Sarasota FL|229 Albany GA|404 Atlanta GA|470 Atlanta GA|678 Atlanta GA|770 Atlanta suburbs GA|943 Atlanta GA|478 Macon GA|706 Augusta GA|762 Augusta GA|912 Savannah GA|808 Honolulu HI|208 Boise ID|986 Boise ID|217 Springfield IL|447 Champaign IL|224 Evanston IL|847 Evanston IL|309 Peoria IL|312 Chicago IL|773 Chicago IL|872 Chicago IL|331 Aurora IL|630 Aurora IL|618 Belleville IL|708 Cicero IL|464 Cicero IL|779 Rockford IL|815 Rockford IL|219 Gary IN|260 Fort Wayne IN|317 Indianapolis IN|463 Indianapolis IN|574 South Bend IN|765 Muncie IN|812 Evansville IN|930 Evansville IN|319 Cedar Rapids IA|515 Des Moines IA|563 Davenport IA|641 Mason City IA|712 Sioux City IA|316 Wichita KS|620 Hutchinson KS|785 Topeka KS|913 Kansas City KS|270 Bowling Green KY|364 Bowling Green KY|502 Louisville KY|606 Ashland KY|859 Lexington KY|225 Baton Rouge LA|318 Shreveport LA|337 Lafayette LA|504 New Orleans LA|985 Houma LA|207 Portland ME|240 Rockville MD|301 Rockville MD|227 Rockville MD|410 Baltimore MD|443 Baltimore MD|667 Baltimore MD|339 Lynn MA|781 Lynn MA|351 Lowell MA|978 Lowell MA|413 Springfield MA|508 Worcester MA|774 Worcester MA|617 Boston MA|857 Boston MA|231 Muskegon MI|248 Troy MI|947 Troy MI|269 Kalamazoo MI|313 Detroit MI|679 Dearborn MI|517 Lansing MI|586 Warren MI|616 Grand Rapids MI|734 Ann Arbor MI|810 Flint MI|906 Marquette MI|989 Saginaw MI|218 Duluth MN|320 St. Cloud MN|507 Rochester MN|924 Rochester MN|612 Minneapolis MN|651 St. Paul MN|763 Brooklyn Park MN|952 Bloomington MN|228 Gulfport MS|601 Jackson MS|769 Jackson MS|662 Tupelo MS|314 St. Louis MO|557 St. Louis MO|417 Springfield MO|573 Columbia MO|235 Columbia MO|636 St. Charles MO|660 Sedalia MO|816 Kansas City MO|975 Kansas City MO|406 Billings MT|308 Grand Island NE|402 Omaha NE|531 Omaha NE|702 Las Vegas NV|725 Las Vegas NV|775 Reno NV|603 Manchester NH|201 Jersey City NJ|551 Jersey City NJ|609 Trenton NJ|640 Trenton NJ|732 Toms River NJ|848 Toms River NJ|856 Camden NJ|862 Newark NJ|973 Newark NJ|908 Elizabeth NJ|505 Albuquerque NM|575 Las Cruces NM|212 Manhattan NY|332 Manhattan NY|646 Manhattan NY|917 New York City NY|929 New York City NY|347 Brooklyn NY|718 Brooklyn NY|315 Syracuse NY|680 Syracuse NY|516 Hempstead NY|363 Hempstead NY|518 Albany NY|838 Albany NY|585 Rochester NY|607 Binghamton NY|631 Islip NY|934 Islip NY|716 Buffalo NY|845 Poughkeepsie NY|914 Yonkers NY|252 Greenville NC|336 Greensboro NC|743 Greensboro NC|704 Charlotte NC|980 Charlotte NC|828 Asheville NC|910 Fayetteville NC|472 Fayetteville NC|919 Raleigh NC|984 Raleigh NC|701 Fargo ND|216 Cleveland OH|220 Newark OH|740 Newark OH|234 Akron OH|330 Akron OH|380 Columbus OH|614 Columbus OH|419 Toledo OH|567 Toledo OH|436 Lorain OH|440 Lorain OH|283 Cincinnati OH|513 Cincinnati OH|326 Dayton OH|937 Dayton OH|405 Oklahoma City OK|572 Oklahoma City OK|539 Tulsa OK|918 Tulsa OK|580 Lawton OK|458 Eugene OR|541 Eugene OR|503 Portland OR|971 Portland OR|215 Philadelphia PA|267 Philadelphia PA|445 Philadelphia PA|223 Harrisburg PA|717 Harrisburg PA|272 Scranton PA|570 Scranton PA|412 Pittsburgh PA|878 Pittsburgh PA|484 Allentown PA|610 Allentown PA|835 Allentown PA|582 Erie PA|814 Erie PA|724 Greensburg PA|401 Providence RI|803 Columbia SC|839 Columbia SC|843 Charleston SC|854 Charleston SC|864 Greenville SC|605 Sioux Falls SD|423 Chattanooga TN|615 Nashville TN|629 Nashville TN|731 Jackson TN|865 Knoxville TN|901 Memphis TN|931 Clarksville TN|210 San Antonio TX|726 San Antonio TX|214 Dallas TX|469 Dallas TX|972 Dallas TX|945 Dallas TX|254 Waco TX|281 Houston TX|346 Houston TX|713 Houston TX|832 Houston TX|325 Abilene TX|361 Corpus Christi TX|409 Beaumont TX|430 Tyler TX|903 Longview–Tyler TX|432 Midland TX|512 Austin TX|737 Austin TX|682 Fort Worth TX|817 Fort Worth TX|806 Lubbock TX|830 New Braunfels TX|915 El Paso TX|936 Conroe TX|940 Denton TX|956 Laredo TX|979 Bryan TX|385 Salt Lake City UT|801 Salt Lake City UT|435 St. George UT|802 Burlington VT|276 Bristol VA|434 Lynchburg VA|540 Roanoke VA|826 Roanoke VA|571 Arlington VA|703 Arlington VA|757 Virginia Beach VA|948 Norfolk VA|804 Richmond VA|686 Richmond VA|206 Seattle WA|253 Tacoma WA|360 Vancouver WA|564 Vancouver WA|425 Bellevue WA|509 Spokane WA|304 Charleston WV|681 Charleston WV|262 Kenosha WI|414 Milwaukee WI|534 Eau Claire WI|715 Eau Claire WI|608 Madison WI|274 Green Bay WI|920 Green Bay WI|307 Cheyenne WY`;
+const AREA = {};
+AC.split("|").forEach(s => { const m = s.match(/^(\d{3}) (.+) ([A-Z]{2})$/); if (m) AREA[m[1]] = { city: m[2], st: m[3] }; });
+
+const STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
+
+/* ---------- Grocery chains by state ---------- */
+const ALL = Object.keys(STATES).join(" ");
+const CHAINS = [
+  ["Walmart","national", ALL],
+  ["Target","national", ALL.replace("VT","")],
+  ["Aldi","discount","AL AR AZ CA CT DC DE FL GA IA IL IN KS KY LA MA MD MI MN MO MS NC NE NH NJ NM NV NY OH OK PA RI SC SD TN TX VA VT WI WV ND"],
+  ["Lidl","discount","NY NJ PA DE MD VA DC NC SC GA CT RI"],
+  ["Dollar General","discount", ALL.replace(/AK|HI|DC/g,"")],["Family Dollar","discount", ALL.replace(/AK|HI/g,"")],
+  ["Costco","warehouse", ALL.replace("WY","")],
+  ["Sam's Club","warehouse", ALL.replace(/OR|VT|DC|RI/g,"")],
+  ["Trader Joe's","national", ALL.replace(/AK|HI|MT|WY|ND|SD|WV|MS/g,"")],
+  ["Sprouts","national","AL AZ CA CO DE FL GA KS LA MD NC NJ NM NV OK PA SC TN TX UT VA WA"],
+  ["WinCo","discount","AZ CA ID MT NV OK OR TX UT WA"],
+  ["Kroger","regional","AL AR GA IL IN KY LA MI MS OH SC TN TX VA WV"],
+  ["Ralphs","regional","CA"],["Food 4 Less","discount","CA IL IN"],
+  ["Fred Meyer","regional","OR WA ID AK"],["QFC","regional","WA OR"],
+  ["King Soopers","regional","CO"],["City Market","regional","CO UT NM WY"],
+  ["Smith's","regional","UT NV NM ID MT WY"],["Fry's","regional","AZ"],
+  ["Dillons","regional","KS"],["Baker's","regional","NE"],["Pick 'n Save","regional","WI"],["Mariano's","regional","IL"],
+  ["Harris Teeter","regional","NC SC VA MD DC DE GA"],
+  ["Safeway","regional","CA OR WA CO AZ MD VA DC AK HI NV NM ID MT WY DE SD NE"],
+  ["Albertsons","regional","CA TX ID LA NV NM OR WA MT WY UT AZ"],
+  ["Vons","regional","CA NV"],["Pavilions","regional","CA"],["Jewel-Osco","regional","IL IN IA"],
+  ["Acme","regional","PA NJ DE NY MD CT"],["Shaw's","regional","MA NH ME VT RI"],["Star Market","regional","MA"],
+  ["Tom Thumb","regional","TX"],["Randalls","regional","TX"],["Carrs","regional","AK"],
+  ["Stop & Shop","regional","MA CT RI NY NJ"],["Giant Food","regional","MD VA DC DE"],["Giant","regional","PA"],
+  ["Food Lion","discount","NC SC VA GA TN MD WV DE KY"],["Hannaford","regional","ME NH VT MA NY"],
+  ["Publix","regional","FL GA AL SC TN NC VA KY"],["Winn-Dixie","regional","FL AL GA LA MS"],
+  ["H-E-B","regional","TX"],["Meijer","regional","MI OH IN IL KY WI"],
+  ["Hy-Vee","regional","IA MN MO NE KS SD IL WI"],["Fareway","regional","IA NE MN IL SD"],
+  ["Wegmans","regional","NY PA NJ MD VA MA NC DE DC"],["ShopRite","regional","NJ NY PA CT DE MD"],
+  ["Piggly Wiggly","regional","AL GA SC WI MS TN"],["Food City","regional","TN VA KY GA"],
+  ["Ingles","regional","NC SC GA TN VA AL"],["Lowes Foods","regional","NC SC"],
+  ["Weis","regional","PA MD NJ NY DE WV VA"],["Giant Eagle","regional","PA OH WV MD IN"],
+  ["Market Basket","discount","MA NH ME"],["Big Y","regional","MA CT"],
+  ["Price Chopper","regional","NY VT MA CT PA NH"],["Tops","regional","NY PA VT"],
+  ["Schnucks","regional","MO IL IN"],["Dierbergs","regional","MO IL"],["Woodman's","regional","WI IL"],
+  ["Brookshire's","regional","TX LA AR OK"],["Natural Grocers","regional","AZ CO ID KS MO MT NE NM NV OK OR TX UT WA WY IA ND SD AR LA"],["Super 1 Foods","discount","TX LA AR"],["FRESH by Brookshire's","regional","TX"],["Spring Market","regional","TX"],["Rouses","regional","LA MS AL"],["Harps","regional","AR OK MO"],
+  ["United Supermarkets","regional","TX"],["Fiesta Mart","regional","TX"],
+  ["Homeland","regional","OK"],["Reasor's","regional","OK"],
+  ["Cub","regional","MN"],["Coborn's","regional","MN SD ND"],
+  ["Raley's","regional","CA NV"],["Save Mart","regional","CA"],["Stater Bros.","regional","CA"],["Smart & Final","discount","CA AZ NV"],
+  ["Bashas'","regional","AZ"],["Foodland","regional","HI"],["Times Supermarket","regional","HI"],
+  ["Grocery Outlet","discount","CA OR WA ID NV PA NJ DE MD"],["Save A Lot","discount","AL AR FL GA IL IN KY LA MD MI MO MS NC NJ NY OH PA SC TN VA WV"],
+  ["Hornbacher's","regional","ND MN"],["Lunds & Byerlys","regional","MN"],["Rosauers","regional","WA ID MT"],
+];
+const KIND_LABEL = { discount:"Discount", warehouse:"Warehouse club", regional:"Regional", national:"National" };
+const KIND_ORDER = { discount:0, regional:1, national:2, warehouse:3 };
+
+function chainsFor(st){
+  return CHAINS.filter(c => c[2].split(/\s+/).includes(st))
+    .sort((a,b) => KIND_ORDER[a[1]] - KIND_ORDER[b[1]] || a[0].localeCompare(b[0]));
+}
+
+/* ---------- Units ---------- */
+const UNITS = {
+  oz:{dim:"wt",toBase:1/16,label:"oz"}, lb:{dim:"wt",toBase:1,label:"lb"}, g:{dim:"wt",toBase:1/453.592,label:"g"}, kg:{dim:"wt",toBase:2.20462,label:"kg"},
+  floz:{dim:"vol",toBase:1,label:"fl oz"}, qt:{dim:"vol",toBase:32,label:"qt"}, gal:{dim:"vol",toBase:128,label:"gal"}, l:{dim:"vol",toBase:33.814,label:"L"},
+  ct:{dim:"ct",toBase:1,label:"ct"}, dz:{dim:"ct",toBase:12,label:"dozen"},
+};
+const BASE_LABEL = { wt:"/lb", vol:"/fl oz", ct:"/each" };
+function unitPrice(d){ const u = UNITS[d.unit]; return d.price / (d.qty * u.toBase); }
+
+/* ---------- State ---------- */
+const KEY = "area-deal-shopper-v2";
+const today = new Date(); today.setHours(0,0,0,0);
+const isoIn = n => { const d = new Date(today); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+const EXAMPLES = [
+  ["Large eggs","Aldi",2.49,12,"ct",4],["Large eggs","Publix",3.29,18,"ct",1],
+  ["Chicken breast","Winn-Dixie",5.97,3,"lb",5],["Chicken breast","Publix",2.49,1,"lb",1],
+  ["Whole milk","Walmart",3.18,1,"gal",6],["Whole milk","Aldi",1.85,64,"floz",4],
+  ["Strawberries","Publix",2.50,16,"oz",1],["Strawberries","Aldi",1.99,16,"oz",4],
+].map((e,i) => ({ id:"ex"+i, item:e[0], store:e[1], price:e[2], qty:e[3], unit:e[4], ends:isoIn(e[5]), picked:i===0||i===2||i===5, example:true }));
+
+let state = { area:"903", st:"TX", deals:[] };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.deals)) state = s; } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+
+/* ---------- Render helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const money = n => "$" + n.toFixed(2);
+function tagPrice(n){
+  const [d,c] = n.toFixed(2).split(".");
+  return `<span class="d">$</span>${d}<sup>${c}</sup>`;
+}
+function fmtUnit(v, dim){
+  return (v < 1 ? "$" + v.toFixed(3) : money(v)) + BASE_LABEL[dim];
+}
+function daysLeft(ends){
+  if (!ends) return null;
+  const d = new Date(ends + "T00:00:00"); return Math.round((d - today) / 864e5);
+}
+
+function currentPlace(){
+  const a = AREA[state.area];
+  if (a) return { city:a.city, st:a.st };
+  if (state.st) return { city:null, st:state.st };
+  return null;
+}
+
+function renderArea(){
+  const where = $("whereText"), p = currentPlace();
+  const valid = /^\d{3}$/.test(state.area);
+  if (AREA[state.area]) {
+    where.innerHTML = `<strong>${esc(p.city)}, ${p.st}</strong><span>${STATES[p.st]} · area code ${state.area}</span>`;
+  } else {
+    const opts = Object.entries(STATES).map(([k,v]) => `<option value="${k}" ${state.st===k?"selected":""}>${v}</option>`).join("");
+    where.innerHTML = `<span>${valid ? `${state.area} isn't in this list. Pick your state:` : "Enter a 3-digit area code, or pick a state:"}</span>
+      <div class="statepick"><select id="stSel" aria-label="State"><option value="">Choose state</option>${opts}</select></div>`;
+    $("stSel").addEventListener("change", e => { state.st = e.target.value || null; save(); renderAll(); });
+  }
+}
+
+function renderStores(){
+  const p = currentPlace(), box = $("stores");
+  if (!p) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">Enter your area code to list the grocers near you.</div>`; return; }
+  const loc = p.city ? `${p.city} ${p.st}` : STATES[p.st];
+  const list = chainsFor(p.st);
+  $("storesNote").textContent = `${list.length} chains operating in ${STATES[p.st]}. Not every chain is in every town; the ad links search for the one nearest ${p.city || "you"}.`;
+  box.innerHTML = list.map(([name, kind]) => {
+    const q = encodeURIComponent(`${name} weekly ad ${loc}`);
+    const qd = encodeURIComponent(`${name} digital coupons`);
+    return `<div class="store"><div class="name"><span>${esc(name)}</span><span class="kind ${kind}">${KIND_LABEL[kind]}</span></div>
+      <div class="links"><a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">Weekly ad ↗</a>
+      <a href="https://www.google.com/search?q=${qd}" target="_blank" rel="noopener">Coupons ↗</a></div></div>`;
+  }).join("");
+  $("storeList").innerHTML = list.map(c => `<option value="${esc(c[0])}">`).join("");
+}
+
+function renderBoard(){
+  const box = $("groups");
+  const items = [...new Set(state.deals.map(d => d.item))];
+  $("itemList").innerHTML = items.map(i => `<option value="${esc(i)}">`).join("");
+  $("clearExamples").hidden = !state.deals.some(d => d.example);
+  $("clearExpired").hidden = !state.deals.some(d => (daysLeft(d.ends) ?? 0) < 0);
+  if (!state.deals.length) { box.innerHTML = `<div class="empty">No deals yet. Press Add next to a sale price above, or type in one you found.</div>`; return; }
+
+  const groups = {};
+  state.deals.forEach(d => {
+    const k = d.item.trim().toLowerCase() + "|" + UNITS[d.unit].dim;
+    (groups[k] ||= { name:d.item.trim(), dim:UNITS[d.unit].dim, deals:[] }).deals.push(d);
+  });
+  const sorted = Object.values(groups).sort((a,b) => a.name.localeCompare(b.name));
+  box.innerHTML = sorted.map(g => {
+    g.deals.sort((a,b) => unitPrice(a) - unitPrice(b));
+    const live = g.deals.filter(d => (daysLeft(d.ends) ?? 0) >= 0);
+    const best = live[0];
+    let saveTxt = "";
+    if (live.length > 1) {
+      const worst = unitPrice(live[live.length-1]), b = unitPrice(best);
+      saveTxt = `${Math.round((1 - b/worst) * 100)}% less per unit at ${esc(best.store)}`;
+    }
+    const rows = g.deals.map(d => {
+      const left = daysLeft(d.ends);
+      let endChip = "";
+      if (left !== null) {
+        if (left < 0) endChip = `<span class="chip warn">Ended</span>`;
+        else if (left <= 1) endChip = `<span class="chip warn">${left === 0 ? "Ends today" : "Ends tomorrow"}</span>`;
+        else endChip = `<span class="chip">Thru ${new Date(d.ends+"T00:00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</span>`;
+      }
+      const cls = ["row", d === best && live.length > 1 ? "best" : "", left !== null && left < 0 ? "expired" : ""].join(" ");
+      return `<div class="${cls}">
+        <input type="checkbox" data-pick="${d.id}" ${d.picked?"checked":""} aria-label="Add ${esc(d.item)} at ${esc(d.store)} to trip">
+        <div class="who"><b>${esc(d.store)}</b><small><span class="num">${+d.qty} ${UNITS[d.unit].label}</span>${endChip}${d.example?'<span class="chip ex">Example</span>':""}</small></div>
+        <span class="unit">${fmtUnit(unitPrice(d), g.dim)}</span>
+        <span class="price">${tagPrice(d.price)}</span>
+        <button class="del" type="button" data-del="${d.id}" aria-label="Remove deal">×</button>
+      </div>`;
+    }).join("");
+    return `<div class="group"><div class="group-head"><h3>${esc(g.name)}</h3><span class="save">${saveTxt}</span></div>${rows}</div>`;
+  }).join("");
+}
+
+function renderTrip(){
+  const picked = state.deals.filter(d => d.picked);
+  const total = picked.reduce((s,d) => s + d.price, 0);
+  $("tripCount").textContent = `${picked.length} item${picked.length===1?"":"s"}`;
+  $("tripTotal").innerHTML = tagPrice(total);
+  if (!picked.length) { $("tripStops").innerHTML = `<p class="note">Tick deals on the board to build your shopping route.</p>`; return; }
+  const by = {};
+  picked.forEach(d => (by[d.store] ||= []).push(d));
+  const stops = Object.entries(by).sort((a,b) => b[1].length - a[1].length);
+  $("tripStops").innerHTML = `<p class="note">${stops.length} stop${stops.length===1?"":"s"}</p>` + stops.map(([s, ds]) =>
+    `<div class="stop"><b>${esc(s)}</b><ul>${ds.map(d => `<li><span>${esc(d.item)}</span><span class="num">${money(d.price)}</span></li>`).join("")}</ul></div>`
+  ).join("");
+}
+
+/* ---------- This week's prices (Longview snapshot) ---------- */
+const CAT_ORDER = ["Shrimp","Fish","Crab & crawfish","Milk","Eggs","Beef","Chicken","Pork","Bacon & sausage","Turkey"];
+const WEEK = LONGVIEW.map((r,i) => ({ id:"w"+i, cat:r[0], store:r[1], name:r[2], price:r[3], unit:r[4], note:r[5], to:r[7], perLb:r[8] }));
+const WEEK_STORES = [...new Set(WEEK.map(w => w.store))].sort((a,b) =>
+  WEEK.filter(w => w.store===b).length - WEEK.filter(w => w.store===a).length);
+const view = { cat:"Shrimp", off:new Set(), sort:"price" };
+const endDate = to => { if (!to) return null; const d = new Date(to+"T00:00:00"); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); };
+
+/* Longview store addresses (Target has a store at 3092 N Eastman Rd but no prices here). */
+const STORE_INFO = {
+  "Brookshire's": "3354 Gilmer Rd",
+  "Super 1 Foods": "1217 E Marshall Ave · 1800 S High St · 2301 W Loop 281",
+  "FRESH by Brookshire's": "3121 N Eastman Rd",
+  "Kroger": "701 W Marshall Ave",
+  "ALDI": "1725 W Loop 281",
+  "Albertsons": "3603 McCann Rd",
+  "Sprouts": "2547 Judson Rd",
+  "Walmart": "515 E Loop 281 (prices from this store) · also 2440 Gilmer Rd, 4006 Estes Pkwy",
+  "Sam's Club": "3310 N 4th St",
+  "Natural Grocers": "406 W Loop 281",
+  "Target": "3092 N Eastman Rd",
+  "Dollar General": "2800 E Marshall Ave · 1003 N Eastman Rd · 1404 McCann Rd · 2421 Gilmer Rd and 9 more Longview stores",
+  "Family Dollar": "1205 E Marshall Ave · 1200 S High St · 935 E Young St · 114 Johnston St · 5401 W Marshall Ave",
+};
+const mapLink = (store) => {
+  const a = STORE_INFO[store]; if (!a) return "";
+  const first = a.split(" · ")[0].replace(/ \(.*\)$/, "");
+  const q = encodeURIComponent(`${store} ${first} Longview TX`);
+  return `<a class="addr" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">${esc(a)}</a>`;
+};
+
+/* Normal-price baselines. BLS = U.S. Bureau of Labor Statistics average price, South region, Aug 2026.
+   Local = median everyday price at Walmart (E Loop 281) and Sam's Club (#6422), Longview, Oct 7, 2026. */
+const NORMS = [
+  { re:/shrimp/i, need:/cooked/i, skip:/breaded|popcorn|butterfly|tempura|scampi|meal|salmon/i, base:9.29, per:"lb", src:"Longview everyday, cooked shrimp" },
+  { re:/shrimp/i, skip:/breaded|popcorn|butterfly|tempura|scampi|meal|cooked|battered|salmon/i, base:7.99, per:"lb", src:"Longview everyday, raw shrimp" },
+  { re:/salmon/i, skip:/battered|marinated/i, base:10.92, per:"lb", src:"Longview everyday, salmon" },
+  { re:/tilapia|swai|pangasius/i, skip:/parmesan|breaded/i, base:4.21, per:"lb", src:"Longview everyday, tilapia/swai" },
+  { re:/catfish/i, skip:/nugget|strip|breaded/i, base:7.48, per:"lb", src:"Longview everyday, catfish" },
+  { re:/milk/i, need:/gallon/i, base:3.90, per:"gal", src:"BLS South avg, whole milk" },
+  { re:/\beggs\b/i, base:2.34, per:"dz", src:"BLS South avg, large eggs" },
+  { re:/ground (beef|chuck)|\d+\/\d+ (lean )?ground beef|lean ground beef/i, skip:/patties|sliders|organic|grass/i, base:6.41, per:"lb", src:"BLS South avg, ground beef" },
+  { re:/chuck roast|chuck eye|chuck steak|cross rib|rump roast/i, base:9.08, per:"lb", src:"BLS South avg, chuck roast" },
+  { re:/brisket/i, skip:/smokehouse|sliced/i, base:5.88, per:"lb", src:"Longview everyday, brisket" },
+  { re:/ribeye|new york strip/i, skip:/burger|ribs/i, base:14.97, per:"lb", src:"Longview everyday, Choice ribeye" },
+  { re:/chicken breast/i, skip:/diced|nugget|bite|patt|strip|deli|chunk|ham/i, base:4.14, per:"lb", src:"BLS South avg, boneless chicken breast" },
+  { re:/thigh/i, need:/boneless/i, base:2.98, per:"lb", src:"Longview everyday, boneless thighs" },
+  { re:/thigh|drumstick|leg quarter|chicken legs/i, base:1.62, per:"lb", src:"BLS South avg, bone-in chicken legs" },
+  { re:/pork chops/i, need:/bone-in/i, base:4.64, per:"lb", src:"BLS South avg, bone-in pork chops" },
+  { re:/pork chops|loin chops/i, base:5.50, per:"lb", src:"BLS South avg, boneless pork chops" },
+  { re:/butt|boston|pork shoulder/i, skip:/beef/i, base:2.48, per:"lb", src:"Longview everyday, pork butt" },
+  { re:/ribs/i, need:/pork/i, skip:/cooked|short ribs/i, base:3.23, per:"lb", src:"Longview everyday, pork ribs" },
+  { re:/bacon/i, skip:/crumbled|cooked/i, base:6.10, per:"lb", src:"BLS South avg, sliced bacon" },
+  { re:/ground turkey|lean turkey/i, base:4.55, per:"lb", src:"Longview everyday, ground turkey" },
+];
+function measure(w, per){
+  if (w.price == null) return null;
+  const n = w.name;
+  if (per === "lb") {
+    if (w.perLb != null) return w.perLb;
+    const oz = n.match(/(\d+(?:\.\d+)?)\s*oz\b/i), lb = n.match(/(\d+(?:\.\d+)?)\s*lb\b/i);
+    if (oz) return w.price / (parseFloat(oz[1]) / 16);
+    if (lb) return w.price / parseFloat(lb[1]);
+    return null;
+  }
+  if (per === "gal") return /gallon/i.test(n) ? w.price : null;
+  if (per === "dz") {
+    const ct = n.match(/(\d+)\s*ct\b/i), dz = n.match(/(\d+)\s*dozen/i);
+    if (ct) return w.price / (parseInt(ct[1]) / 12);
+    if (dz) return w.price / parseInt(dz[1]);
+    if (/dozen/i.test(n)) return w.price;
+    return null;
+  }
+  return null;
+}
+function normalFor(w){
+  for (const r of NORMS) {
+    if (!r.re.test(w.name) || (r.need && !r.need.test(w.name)) || (r.skip && r.skip.test(w.name))) continue;
+    const m = measure(w, r.per);
+    if (m == null) return null;
+    const pct = Math.round((m - r.base) / r.base * 100);
+    const unit = r.per === "lb" ? "/lb" : r.per === "gal" ? "/gal" : "/dozen";
+    return { base:r.base, unit, pct, src:r.src, m };
+  }
+  return null;
+}
+function cmpHtml(w){
+  const c = normalFor(w); if (!c) return "";
+  const cls = c.pct <= -3 ? "below" : c.pct >= 3 ? "above" : "";
+  const word = c.pct <= -3 ? `${-c.pct}% below` : c.pct >= 3 ? `${c.pct}% above` : "about normal";
+  return `<span class="cmp ${cls}" title="${esc(c.src)}">Normal ${money(c.base)}${c.unit} · <b>${word}</b></span>`;
+}
+
+const fmtDay = (iso, opts) => new Date(iso + "T00:00:00").toLocaleDateString("en-US", opts);
+function renderTop(){
+  const show = state.area === "903";
+  $("topSec").hidden = !show;
+  if (!show) return;
+  const today = new Date().toISOString().slice(0,10);
+  const live = WEEK.filter(w => !w.to || endDate(w.to) >= today);
+  const scored = live.map(w => ({ w, c: normalFor(w) })).filter(x => x.c && x.c.pct <= -10).sort((a,b) => a.c.pct - b.c.pct);
+  const per = {}, pick = [];
+  for (const x of scored) { if ((per[x.w.cat] = (per[x.w.cat] || 0) + 1) > 2) continue; pick.push(x); if (pick.length === 5) break; }
+  const onBoard = new Set(state.deals.map(d => d.src).filter(Boolean));
+  $("topNote").textContent = `The biggest savings against the normal price for ${fmtDay(WEEK_OF.start,{month:"short",day:"numeric"})}–${fmtDay(WEEK_OF.end,{month:"short",day:"numeric"})}, two at most per food type.`;
+  $("topList").innerHTML = pick.length ? pick.map((x,i) => {
+    const w = x.w, c = x.c;
+    const ends = w.to ? `Sale ends ${fmtDay(endDate(w.to),{weekday:"short",month:"short",day:"numeric"})}` : "Everyday price";
+    return `<li>
+      <span class="rank">No. ${i+1} · ${esc(w.cat)}</span>
+      <span class="off">${-c.pct}%<small>below normal</small></span>
+      <span class="nm">${esc(w.name)}</span>
+      <span class="meta"><b>${esc(w.store)}</b>${mapLink(w.store)}</span>
+      <span class="meta">Normal ${money(c.base)}${c.unit} · ${ends}${w.note ? " · " + esc(w.note) : ""}</span>
+      <div class="row2"><span class="price">${tagPrice(w.price)}</span><span class="meta">${w.unit==="/lb" ? "per lb" : w.perLb ? money(w.perLb)+"/lb" : "each"}</span>
+        <button type="button" class="add" data-add="${w.id}" ${onBoard.has(w.id)?"disabled":""}>${onBoard.has(w.id)?"Added":"Add"}</button></div>
+    </li>`;
+  }).join("") : `<li>No deals this week are more than 10% below normal.</li>`;
+}
+function renderWeek(){
+  const show = state.area === "903";
+  $("weekSec").hidden = !show;
+  renderTop();
+  if (!show) return;
+  $("weekRange").textContent = `${fmtDay(WEEK_OF.start,{month:"short",day:"numeric"})}–${fmtDay(WEEK_OF.end,{month:"short",day:"numeric",year:"numeric"})}`;
+  $("collectedOn").textContent = fmtDay(WEEK_OF.collected,{month:"short",day:"numeric",year:"numeric"});
+  const vis = WEEK.filter(w => !view.off.has(w.store));
+  $("catTabs").innerHTML = ["All", ...CAT_ORDER].map(c => {
+    const n = c === "All" ? vis.length : vis.filter(w => w.cat===c).length;
+    return `<button type="button" class="tab" data-cat="${esc(c)}" aria-pressed="${view.cat===c}">${esc(c)}<span class="n num">${n}</span></button>`;
+  }).join("");
+  $("storeBar").innerHTML = `<span class="eyebrow">Stores</span>` + WEEK_STORES.map(st =>
+    `<label><input type="checkbox" data-store="${esc(st)}" ${view.off.has(st)?"":"checked"}>${esc(st)}</label>`).join("");
+  document.querySelectorAll("[data-sort]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sort === view.sort)));
+  const onBoard = new Set(state.deals.map(d => d.src).filter(Boolean));
+  const row = (w, low, showCat) => `<tr class="${w===low?"low":""}">
+      <td class="st">${esc(w.store)}${mapLink(w.store)}${showCat?`<span class="catlbl">${esc(w.cat)}</span>`:""}</td>
+      <td>${esc(w.name)}${w.note?`<div class="nt">${esc(w.note)}</div>`:""}</td>
+      <td class="p">${w.price == null ? `<small>See note</small>` : `<span class="price">${tagPrice(w.price)}</span><small>${w.unit==="/lb" ? "per lb" : w.perLb ? `each · ${money(w.perLb)}/lb` : w.unit==="each" ? "each" : "as priced"}</small>${cmpHtml(w)}`}</td>
+      <td>${w.price == null ? "" : `<button type="button" class="add" data-add="${w.id}" ${onBoard.has(w.id)?"disabled":""}>${onBoard.has(w.id)?"Added":"Add"}</button>`}</td>
+    </tr>`;
+  let html = "";
+  if (view.sort === "pct") {
+    // One list ranked by how far below normal each item is; items without a normal price go last.
+    const pool = vis.filter(w => view.cat === "All" || w.cat === view.cat);
+    const pct = w => { const c = normalFor(w); return c ? c.pct : Infinity; };
+    const rows = pool.map(w => [w, pct(w)]).sort((a,b) => a[1] - b[1]);
+    const ranked = rows.filter(r => r[1] !== Infinity), rest = rows.filter(r => r[1] === Infinity);
+    html += ranked.map(r => row(r[0], null, view.cat === "All")).join("");
+    if (rest.length) html += `<tr class="cat"><td colspan="4">No normal price to compare</td></tr>` + rest.map(r => row(r[0], null, view.cat === "All")).join("");
+  } else {
+    const cats = view.cat === "All" ? CAT_ORDER : [view.cat];
+    cats.forEach(c => {
+      const key = w => w.perLb ?? (w.price == null ? 1e9 : 1e6 + w.price);
+      const rows = vis.filter(w => w.cat===c).sort((a,b) => key(a) - key(b));
+      if (!rows.length) { if (view.cat !== "All") html += `<tr><td colspan="4" class="nt">No ${esc(c.toLowerCase())} on sale at the selected stores this week.</td></tr>`; return; }
+      const lb = rows.filter(w => w.perLb != null);
+      const low = lb.length > 1 ? lb[0] : null;
+      if (view.cat === "All") html += `<tr class="cat"><td colspan="4">${esc(c)}</td></tr>`;
+      html += rows.map(w => row(w, low, false)).join("");
+    });
+  }
+  $("ptBody").innerHTML = html || `<tr><td colspan="4" class="nt">Select at least one store.</td></tr>`;
+}
+document.querySelector(".sortbar").addEventListener("click", e => { const b = e.target.closest("[data-sort]"); if (!b) return; view.sort = b.dataset.sort; renderWeek(); });
+$("catTabs").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (!b) return; view.cat = b.dataset.cat; renderWeek(); });
+$("storeBar").addEventListener("change", e => { const st = e.target.dataset.store; if (!st) return; e.target.checked ? view.off.delete(st) : view.off.add(st); renderWeek(); });
+$("topList").addEventListener("click", e => addWeek(e.target.dataset.add));
+$("ptBody").addEventListener("click", e => addWeek(e.target.dataset.add));
+function addWeek(id){
+  if (!id) return;
+  const w = WEEK.find(x => x.id === id);
+  state.deals.push({ id:"d"+Date.now(), src:w.id, item:w.cat === "Milk" || w.cat === "Eggs" ? w.cat : w.name.replace(/^(Fresh|Brookshire's|Kroger|Sprouts|H-E-B|Super 1 Foods)\s+/i,""),
+    store:w.store, price:w.price, qty:1, unit:w.unit==="/lb"?"lb":"ct", ends:endDate(w.to), picked:true });
+  save(); renderWeek(); renderBoard(); renderTrip();
+}
+
+function renderAll(){ renderArea(); renderWeek(); renderStores(); renderBoard(); renderTrip(); }
+
+/* ---------- Events ---------- */
+$("areaCode").value = state.area;
+$("areaCode").addEventListener("input", e => {
+  const v = e.target.value.replace(/\D/g,"").slice(0,3);
+  e.target.value = v; state.area = v;
+  if (AREA[v]) state.st = AREA[v].st;
+  save(); renderArea(); renderWeek(); renderStores();
+});
+$("addForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const d = { id:"d"+Date.now(), item:$("fItem").value.trim(), store:$("fStore").value.trim(),
+    price:parseFloat($("fPrice").value), qty:parseFloat($("fQty").value), unit:$("fUnit").value,
+    ends:$("fEnds").value || null, picked:false };
+  if (!d.item || !d.store || !(d.price >= 0) || !(d.qty > 0)) return;
+  state.deals.push(d); save(); renderBoard(); renderTrip();
+  $("fPrice").value = ""; $("fQty").value = ""; $("fStore").value = ""; $("fStore").focus();
+});
+$("groups").addEventListener("change", e => {
+  const id = e.target.dataset.pick; if (!id) return;
+  const d = state.deals.find(x => x.id === id); if (d) { d.picked = e.target.checked; save(); renderTrip(); }
+});
+$("groups").addEventListener("click", e => {
+  const id = e.target.dataset.del; if (!id) return;
+  state.deals = state.deals.filter(x => x.id !== id); save(); renderWeek(); renderBoard(); renderTrip();
+});
+$("clearExamples").addEventListener("click", () => { state.deals = state.deals.filter(d => !d.example); save(); renderBoard(); renderTrip(); });
+$("clearExpired").addEventListener("click", () => { state.deals = state.deals.filter(d => (daysLeft(d.ends) ?? 0) >= 0); save(); renderBoard(); renderTrip(); });
+
+renderAll();
+
+/* ---------- Ask Claude: meal plan from the deals ---------- */
+(async () => {
+  const sample = await window.claude?.use?.("sample").catch(() => null);
+  if (!sample) return;
+  $("aiBox").hidden = false;
+  let ctrl = null;
+  $("aiBtn").addEventListener("click", async () => {
+    const live = state.deals.filter(d => (daysLeft(d.ends) ?? 0) >= 0);
+    const use = live.some(d => d.picked) ? live.filter(d => d.picked) : live;
+    if (!use.length) { $("aiOut").hidden = false; $("aiOut").textContent = "Add a few deals to the board first."; return; }
+    const list = use.map(d => `- ${d.item}: ${money(d.price)} for ${d.qty} ${UNITS[d.unit].label} at ${d.store}`).join("\n");
+    const p = currentPlace();
+    ctrl?.abort(); ctrl = new AbortController();
+    $("aiBtn").disabled = true; $("aiOut").hidden = false; $("aiOut").textContent = "Thinking…";
+    try {
+      await sample(
+        `I'm grocery shopping${p ? ` near ${p.city ? p.city + ", " : ""}${STATES[p.st]}` : ""}. These are the sale items I found this week:\n${list}\n\n` +
+        `Suggest 5 simple dinners for the week built mainly around these sale items, plus a short list of pantry staples I'd also need. ` +
+        `Keep it under 200 words, plain text, no markdown headings. Don't invent prices for items not in my list.`,
+        { signal: ctrl.signal, onText: ({ text }) => { $("aiOut").textContent = text; } }
+      );
+    } catch (err) {
+      if (err?.code === "not_granted") { $("aiBox").hidden = true; }
+      else if (err?.code !== "cancelled") $("aiOut").textContent = err?.code === "rate_limited" ? "Too many requests right now. Try again in a minute." : "Couldn't get suggestions. Try again later.";
+    } finally { $("aiBtn").disabled = false; }
+  });
+})();
+</script>
+</body>
+</html>
