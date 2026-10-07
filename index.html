@@ -50,6 +50,7 @@ header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:spac
 .where{display:grid;gap:2px;min-width:0}
 .where strong{font-family:var(--display);font-size:24px;font-weight:800;font-stretch:85%}
 .where span{color:var(--muted);font-size:13px}
+.zip-go{align-self:center}
 .statepick{display:flex;gap:8px;align-items:center}
 .statepick select{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
 
@@ -187,6 +188,7 @@ aside.trip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);backgro
         <input id="areaCode" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="75601" aria-describedby="whereText">
       </label>
       <div class="where" id="whereText" aria-live="polite"></div>
+      <button type="button" class="btn zip-go" id="zipGo">Update prices</button>
     </div>
   </header>
 
@@ -718,14 +720,14 @@ async function fetchZipDeals(zip){
   return { rows, week:{ start, end:e.toISOString().slice(0,10), collected:new Date().toISOString().slice(0,10) } };
 }
 const LIVE_CACHE = "live-deals-v1";
-async function loadDeals(zip){
+async function loadDeals(zip, force){
   view.off = new Set();
   if (!/^\d{5}$/.test(zip)) { DATA = { mode:"none", status:"idle", zip, week:null }; WEEK = []; WEEK_STORES = []; return renderWeek(); }
   if (/^756/.test(zip)) { DATA = { mode:"snapshot", status:"ready", zip, week:WEEK_OF }; WEEK = toWeek(LONGVIEW, "w"); WEEK_STORES = storesOf(WEEK); return renderWeek(); }
   let cache = {};
   try { cache = JSON.parse(localStorage.getItem(LIVE_CACHE)) || {}; } catch {}
   const hit = cache[zip];
-  if (hit && Date.now() - hit.at < 12 * 3600e3) {
+  if (hit && !force && Date.now() - hit.at < 12 * 3600e3) {
     DATA = { mode:"live", status: hit.rows.length ? "ready" : "none", zip, week:hit.week };
     WEEK = toWeek(hit.rows, `z${zip}-`); WEEK_STORES = storesOf(WEEK); return renderWeek();
   }
@@ -784,6 +786,7 @@ function renderTop(){
   }).join("") : `<li>No deals this week are more than 10% below normal.</li>`;
 }
 function renderWeek(){
+  updateZipButton();
   const show = DATA.status === "ready";
   $("weekSec").hidden = !show;
   renderTop();
@@ -864,15 +867,28 @@ async function setZip(v){
       if (t && !t.missing) state.st = t.st;
     }
   }
-  save(); renderArea(); renderStores();
-  loadDeals(v);
+  save(); renderArea(); renderStores(); updateZipButton();
 }
+/* The button loads prices for the ZIP in the box; pressing it again for the same ZIP fetches fresh ads. */
+function updateZipButton(){
+  const b = $("zipGo"), v = state.zip || "", ok = /^\d{5}$/.test(v);
+  const loading = DATA.status === "loading";
+  b.disabled = !ok || loading;
+  b.textContent = loading ? "Loading prices…"
+    : !ok ? "Update prices"
+    : v === DATA.zip && DATA.status === "ready" ? (DATA.mode === "snapshot" ? "Prices up to date" : "Refresh prices")
+    : `Update prices for ${v}`;
+  if (v === DATA.zip && DATA.mode === "snapshot" && DATA.status === "ready") b.disabled = true;
+}
+const goZip = () => { if (/^\d{5}$/.test(state.zip || "")) loadDeals(state.zip, true); };
+$("zipGo").addEventListener("click", goZip);
+$("areaCode").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); goZip(); } });
 $("areaCode").value = state.zip;
 $("areaCode").addEventListener("input", e => {
   const v = e.target.value.replace(/\D/g,"").slice(0,5);
   e.target.value = v; setZip(v);
 });
-setZip(state.zip || "");
+setZip(state.zip || "").then(() => loadDeals(state.zip || ""));
 $("addForm").addEventListener("submit", e => {
   e.preventDefault();
   const d = { id:"d"+Date.now(), item:$("fItem").value.trim(), store:$("fStore").value.trim(),
