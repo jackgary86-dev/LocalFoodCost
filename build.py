@@ -132,6 +132,8 @@ def apply_verified(rows, week_start):
             if r[1] == fix["store"] and fix["match"].lower() in r[2].lower():
                 if fix.get("name"):
                     r[2] = fix["name"]
+                if fix.get("per_lb"):
+                    r[8] = fix["per_lb"]
                 if fix.get("note") and fix["note"] not in r[5]:
                     r[5] = "; ".join(x for x in (r[5], fix["note"]) if x)
                 applied += 1
