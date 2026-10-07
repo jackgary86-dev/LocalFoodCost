@@ -5,7 +5,8 @@ This week's grocery deals in Longview, TX (ZIP 75601), as a phone-friendly web p
 
 - **Top 5 deals this week**: the biggest savings against the normal price.
 - **Every price** for shrimp, fish, crab, milk, eggs, beef, chicken, pork, bacon, sausage and turkey at Longview stores, with each store's address.
-- **Normal price** for each item: the BLS average price for the South region where the government tracks it, otherwise the median everyday price at Longview's Walmart and Sam's Club.
+- **Normal price** for each item: once an item has 4 earlier weeks of price history, its own Longview median price; until then, the BLS average price for the region where the government tracks it, otherwise the median everyday price at Longview's Walmart and Sam's Club.
+- **Price history** badges: "Lowest in N weeks" and "Usually $X" for items seen in earlier weeks.
 - A shopping list that totals your trip by store (saved in your browser).
 
 ## Where the prices come from
@@ -22,6 +23,7 @@ Stores whose ads list ZIP 75601 but that have no Longview location (H-E-B, Sprin
 - `index.html`: the whole site. The data lives in two constants, `LONGVIEW` and `WEEK_OF`.
 - `build.py`: fetches this week's ads, merges `everyday.json`, rewrites those constants and prints the Top 5. Run `python -I build.py`.
 - `everyday.json`: everyday prices collected from store websites.
+- `history/`: one file per ad week (`YYYY-MM-DD.json`) with each item's price, written by `build.py`. The page gets the last 26 weeks for the items it shows.
 - `verified.json`: corrections from checking store websites by hand (package sizes, regular prices, mismatches). `build.py` applies them only for the ad week they were checked, so they drop off when the next ad starts.
 - `.github/workflows/weekly-refresh.yml`: runs `build.py` every Wednesday and commits the result.
 

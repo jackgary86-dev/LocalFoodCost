@@ -118,6 +118,53 @@ def flipp_rows():
     return rows, starts
 
 
+SIZE_WORDS = re.compile(r"\b\d+(?:\.\d+)?\s*(?:oz|lb|lbs|ct|count|pk|pack|gal|gallon|dozen)\b", re.I)
+HISTORY_DIR = HERE / "history"
+HISTORY_WEEKS = 26
+
+
+def item_key(r):
+    """A stable identity for the same product week to week: store, food type and the name without sizes."""
+    name = SIZE_WORDS.sub(" ", r[2].lower())
+    name = re.sub(r"[^a-z0-9]+", " ", name).strip()
+    return f"{r[1]}|{r[0]}|{name}"
+
+
+def history_value(r):
+    """The number tracked over time: price per pound when known, otherwise the item price."""
+    if r[8] is not None:
+        return r[8], "lb"
+    if r[3] is not None:
+        return r[3], "each"
+    return None, None
+
+
+def save_history(rows, week_start):
+    """Write this ad week's prices to history/<week>.json (rewritten if the week is rebuilt)."""
+    HISTORY_DIR.mkdir(exist_ok=True)
+    items = {}
+    for r in rows:
+        value, unit = history_value(r)
+        if value is not None:
+            items.setdefault(r[10], [value, unit])
+    (HISTORY_DIR / f"{week_start}.json").write_text(
+        json.dumps({"week": week_start, "items": items}, ensure_ascii=False, sort_keys=True, indent=0), encoding="utf-8")
+
+
+def history_for(rows):
+    """Past prices for the items on this week's page, from the most recent HISTORY_WEEKS weekly files."""
+    files = sorted(HISTORY_DIR.glob("*.json"))[-HISTORY_WEEKS:]
+    weeks, items = [], {}
+    wanted = {r[10] for r in rows}
+    for f in files:
+        data = json.loads(f.read_text(encoding="utf-8"))
+        weeks.append(data["week"])
+        for key, (value, unit) in data["items"].items():
+            if key in wanted:
+                items.setdefault(key, []).append([data["week"], value, unit])
+    return {"weeks": weeks, "items": items}
+
+
 def apply_verified(rows, week_start):
     """Apply hand-checked corrections from verified.json when they're for this ad week."""
     path = HERE / "verified.json"
@@ -152,6 +199,11 @@ def main():
     rows = flipp + keep
     start = starts.most_common(1)[0][0]
     applied = apply_verified(rows, start)
+    for r in rows:  # every row gets [.. url, key]; everyday rows have no ad link
+        r.extend([None] * (10 - len(r)))
+        r[10:] = [item_key(r)]
+    save_history(rows, start)
+    history = history_for(rows)
     end = (dt.date.fromisoformat(start) + dt.timedelta(days=6)).isoformat()
     week = {"start": start, "end": end, "collected": today, "everyday_collected": every.get("collected")}
 
@@ -160,17 +212,24 @@ def main():
     html, n1 = re.subn(r"const LONGVIEW = \[.*?\];", lambda m: "const LONGVIEW = " + json.dumps(rows, ensure_ascii=False) + ";",
                        html, count=1, flags=re.S)
     html, n2 = re.subn(r"const WEEK_OF = \{.*?\};", lambda m: "const WEEK_OF = " + json.dumps(week) + ";", html, count=1)
-    if n1 != 1 or n2 != 1:
+    hist_js = "const HISTORY = " + json.dumps(history, ensure_ascii=False) + ";"
+    html, n3 = re.subn(r"const HISTORY = \{.*?\};", lambda m: hist_js, html, count=1, flags=re.S)
+    if n3 == 0:
+        html = html.replace("const WEEK_OF = " + json.dumps(week) + ";", "const WEEK_OF = " + json.dumps(week) + ";\n" + hist_js, 1)
+        n3 = 1
+    if n1 != 1 or n2 != 1 or n3 != 1:
         raise SystemExit("Couldn't find the data constants in index.html.")
     page.write_text(html, encoding="utf-8")
     print(f"Week {start} to {end}: {len(flipp)} ad items + {len(keep)} everyday items from {len(set(r[1] for r in rows))} stores.")
     print(f"Applied {applied} website-checked corrections from verified.json.")
+    print(f"Price history: {len(history['weeks'])} week(s) on file ({', '.join(history['weeks'])}).")
 
     # Preview the Top 5 with the page's own scoring code.
-    script = ('const DATA={mode:"snapshot"};const state={st:"TX"};'
+    script = ("const HISTORY=" + json.dumps(history) + ";const DATA={mode:'snapshot',week:" + json.dumps(week) + "};"
+              "const state={st:'TX'};const money=n=>'$'+n.toFixed(2);"
               + html[html.index("const BLS"):html.index("function cmpHtml")])
     js = (script + "\nconst L=" + json.dumps(rows) + ";const t='" + today + "';"
-          "const sc=L.filter(r=>(!r[7]||r[7]>t)&&!/organic/i.test(r[2])).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8]})}))"
+          "const sc=L.filter(r=>(!r[7]||r[7]>t)&&!/organic/i.test(r[2])).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8],key:r[10]})}))"
           ".filter(x=>x.c&&x.c.pct<=-10).sort((a,b)=>a.c.pct-b.c.pct);const per={},pick=[];"
           "for(const x of sc){if((per[x.r[0]]=(per[x.r[0]]||0)+1)>2)continue;pick.push(x);if(pick.length==5)break}"
           "pick.forEach((x,i)=>console.log(`${i+1}. ${-x.c.pct}% below normal: ${x.r[2]} at ${x.r[1]}, $${x.r[3]}`))")

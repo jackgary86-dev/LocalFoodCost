@@ -1,0 +1,701 @@
+{
+"items": {
+"ALDI|Beef|fresh 96 4 ground beef": [
+7.79,
+"each"
+],
+"ALDI|Chicken|tyson fresh chicken breasts": [
+1.79,
+"lb"
+],
+"ALDI|Pork|fresh pork belly slab": [
+2.99,
+"lb"
+],
+"ALDI|Turkey|kirkwood fresh 93 lean turkey": [
+4.89,
+"each"
+],
+"Albertsons|Beef|fresh 80 lean ground beef": [
+3.99,
+"lb"
+],
+"Albertsons|Beef|usda choice beef boneless petite sirloin steaks": [
+7.99,
+"each"
+],
+"Albertsons|Beef|usda choice beef chuck roast or cross rib shoulder roast": [
+5.99,
+"lb"
+],
+"Albertsons|Beef|usda choice beef short ribs": [
+7.99,
+"each"
+],
+"Albertsons|Beef|usda prime beef new york strip steak": [
+19.99,
+"lb"
+],
+"Albertsons|Chicken|boneless skinless chicken breasts or thighs": [
+1.27,
+"lb"
+],
+"Albertsons|Chicken|cheap chicken": [
+5.99,
+"each"
+],
+"Albertsons|Chicken|fresh diced boneless chicken breast": [
+5.99,
+"lb"
+],
+"Albertsons|Chicken|signature select fresh boneless skinless chicken breasts value pack": [
+3.99,
+"lb"
+],
+"Albertsons|Crab & crawfish|wild alaskan snow crab clusters": [
+13.99,
+"each"
+],
+"Albertsons|Fish|fresh atlantic salmon portions": [
+4.99,
+"each"
+],
+"Albertsons|Fish|fresh whole atlantic salmon fillets waterfront bistro extra jumbo raw shrimp 16 or rock crab clusters": [
+6.99,
+"lb"
+],
+"Albertsons|Pork|fresh pork butt roast": [
+2.29,
+"each"
+],
+"Albertsons|Pork|fresh pork tenderloin": [
+3.99,
+"each"
+],
+"Albertsons|Pork|st louis style pork ribs": [
+2.99,
+"lb"
+],
+"Brookshire's|Bacon & sausage|brookshire s bacon": [
+4.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|brookshire s italian sausage or bratwurst": [
+4.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|brookshire s smoked sausage": [
+3.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|brookshire s thick cut bacon": [
+7.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|earl campbell s smoked sausage or hot link": [
+4.97,
+"each"
+],
+"Brookshire's|Bacon & sausage|eckrich smoked sausage or smok y sausage links": [
+2.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|hill s premium meats ground pork sausage or mexican style chorizo": [
+3.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|john morrell sliced bacon": [
+3.49,
+"each"
+],
+"Brookshire's|Bacon & sausage|johnsonville smoked sausage": [
+3.49,
+"each"
+],
+"Brookshire's|Bacon & sausage|smithfield anytime favorites sliced quarter boneless ham": [
+7.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|thick sliced bacon": [
+14.99,
+"each"
+],
+"Brookshire's|Bacon & sausage|tony chachere s smoked sausage or boudin": [
+4.49,
+"each"
+],
+"Brookshire's|Bacon & sausage|whataburger sausage": [
+4.99,
+"each"
+],
+"Brookshire's|Beef|93 7 lean ground beef": [
+6.99,
+"each"
+],
+"Brookshire's|Beef|bone in ribeye steak or boneless new york strip steak": [
+16.99,
+"lb"
+],
+"Brookshire's|Beef|boneless chuck eye or chuck steak": [
+7.99,
+"lb"
+],
+"Brookshire's|Beef|boneless chuck roast": [
+6.99,
+"each"
+],
+"Brookshire's|Beef|family pack boneless chuck roast": [
+5.99,
+"each"
+],
+"Brookshire's|Chicken|brookshire s frozen chicken": [
+7.99,
+"each"
+],
+"Brookshire's|Crab & crawfish|cold water lobster tail": [
+6.99,
+"each"
+],
+"Brookshire's|Eggs|brookshire s large cage free eggs": [
+1.99,
+"each"
+],
+"Brookshire's|Fish|fresh catfish fillets": [
+7.99,
+"each"
+],
+"Brookshire's|Milk|full circle market organic milk": [
+3.99,
+"each"
+],
+"Brookshire's|Milk|promised land milk": [
+4.99,
+"each"
+],
+"Brookshire's|Shrimp|premium extra large cooked shrimp": [
+7.99,
+"each"
+],
+"Dollar General|Bacon & sausage|eckrich skinless smoked sausage": [
+3.95,
+"each"
+],
+"Dollar General|Bacon & sausage|smithfield thick cut bacon": [
+7.67,
+"lb"
+],
+"Dollar General|Beef|clover valley 73 27 ground beef": [
+6.5,
+"lb"
+],
+"Dollar General|Beef|clover valley 80 20 ground beef": [
+7.25,
+"lb"
+],
+"Dollar General|Beef|tyson ground beef": [
+5.85,
+"lb"
+],
+"Dollar General|Chicken|tyson boneless skinless chicken breasts frozen": [
+4.25,
+"lb"
+],
+"Dollar General|Milk|clover valley 2 milk": [
+4.1,
+"each"
+],
+"Dollar General|Milk|clover valley whole milk": [
+4.1,
+"each"
+],
+"Dollar General|Pork|tyson seasoned boneless pork chops": [
+6.67,
+"lb"
+],
+"FRESH by Brookshire's|Bacon & sausage|fresh made sausage": [
+2.99,
+"lb"
+],
+"FRESH by Brookshire's|Bacon & sausage|hill s premium meats thick sliced bacon": [
+3.33,
+"lb"
+],
+"FRESH by Brookshire's|Beef|boneless chuck roast": [
+4.99,
+"lb"
+],
+"FRESH by Brookshire's|Beef|fresh ground chuck": [
+3.99,
+"lb"
+],
+"FRESH by Brookshire's|Beef|prime boneless ribeye steak": [
+15.99,
+"lb"
+],
+"FRESH by Brookshire's|Chicken|just bare boneless skinless chicken thighs": [
+3.99,
+"lb"
+],
+"FRESH by Brookshire's|Crab & crawfish|cold water lobster tail": [
+6.99,
+"each"
+],
+"FRESH by Brookshire's|Crab & crawfish|snow crab clusters": [
+13.99,
+"lb"
+],
+"Kroger|Bacon & sausage|hormel bacon": [
+5.99,
+"each"
+],
+"Kroger|Bacon & sausage|simple truth bacon": [
+5,
+"each"
+],
+"Kroger|Bacon & sausage|wright smoked sausage links": [
+4.99,
+"each"
+],
+"Kroger|Beef|beef brisket": [
+3.99,
+"lb"
+],
+"Kroger|Beef|kroger 93 lean ground beef": [
+6.99,
+"lb"
+],
+"Kroger|Beef|simple truth organic grass fed 90 lean ground beef": [
+25,
+"each"
+],
+"Kroger|Chicken|just bare frozen chicken": [
+14.99,
+"each"
+],
+"Kroger|Chicken|tyson frozen chicken": [
+5.99,
+"each"
+],
+"Kroger|Eggs|kroger eggs": [
+1.99,
+"each"
+],
+"Kroger|Fish|fresh catfish fillets": [
+6.99,
+"lb"
+],
+"Kroger|Fish|kroger wild pink salmon fillets": [
+11.99,
+"each"
+],
+"Kroger|Milk|simple truth organic milk": [
+3.99,
+"each"
+],
+"Kroger|Pork|pork back ribs": [
+2.49,
+"lb"
+],
+"Kroger|Pork|smithfield marinated pork loin filet": [
+7,
+"each"
+],
+"Kroger|Pork|whole pork tenderloin": [
+2.99,
+"lb"
+],
+"Kroger|Shrimp|kroger large peeled and deveined shrimp": [
+6.99,
+"lb"
+],
+"Natural Grocers|Bacon & sausage|charcutnuvo pork sausages": [
+5.79,
+"each"
+],
+"Natural Grocers|Bacon & sausage|natural grocers hickory smoked bacon": [
+5.99,
+"each"
+],
+"Natural Grocers|Beef|niman ranch organic 80 20 ground beef": [
+10.99,
+"lb"
+],
+"Natural Grocers|Chicken|mary s organic boneless skinless chicken breast": [
+9.99,
+"lb"
+],
+"Natural Grocers|Eggs|free range brown eggs dozen limit 2": [
+2.99,
+"each"
+],
+"Natural Grocers|Fish|cannon fish wild sockeye salmon fillet frozen": [
+18.72,
+"lb"
+],
+"Sam's Club|Bacon & sausage|eckrich smoked sausage family pack": [
+2.66,
+"lb"
+],
+"Sam's Club|Bacon & sausage|member s mark hickory smoked bacon 3": [
+4.42,
+"lb"
+],
+"Sam's Club|Beef|member s mark 80 20 ground beef": [
+5.92,
+"lb"
+],
+"Sam's Club|Beef|member s mark 80 20 ground chuck roll": [
+5.72,
+"lb"
+],
+"Sam's Club|Beef|member s mark 93 7 ground beef": [
+6.32,
+"lb"
+],
+"Sam's Club|Beef|member s mark choice angus boneless chuck roast": [
+7.47,
+"lb"
+],
+"Sam's Club|Beef|member s mark choice angus boneless ribeye steak": [
+14.97,
+"lb"
+],
+"Sam's Club|Beef|member s mark choice angus whole brisket": [
+5.88,
+"lb"
+],
+"Sam's Club|Beef|member s mark organic grass fed 85 15 ground beef": [
+6.58,
+"lb"
+],
+"Sam's Club|Chicken|member s mark bone in chicken thighs": [
+1.28,
+"lb"
+],
+"Sam's Club|Chicken|member s mark boneless skinless chicken breast": [
+2.48,
+"lb"
+],
+"Sam's Club|Chicken|member s mark boneless skinless chicken breasts frozen": [
+2.7,
+"lb"
+],
+"Sam's Club|Chicken|member s mark boneless skinless chicken thighs": [
+2.98,
+"lb"
+],
+"Sam's Club|Chicken|member s mark chicken drumsticks": [
+0.98,
+"lb"
+],
+"Sam's Club|Chicken|member s mark organic boneless skinless chicken breasts": [
+5.36,
+"lb"
+],
+"Sam's Club|Chicken|member s mark organic boneless skinless chicken thighs": [
+5.36,
+"lb"
+],
+"Sam's Club|Crab & crawfish|aqua star southern king crab legs claws frozen": [
+24.99,
+"lb"
+],
+"Sam's Club|Eggs|member s mark cage free large eggs": [
+4.82,
+"each"
+],
+"Sam's Club|Eggs|member s mark organic cage free large brown eggs": [
+8.22,
+"each"
+],
+"Sam's Club|Eggs|member s mark pasture raised organic large brown eggs": [
+6.57,
+"each"
+],
+"Sam's Club|Fish|member s mark atlantic salmon portions frozen": [
+9.98,
+"lb"
+],
+"Sam's Club|Fish|member s mark catfish fillets frozen": [
+8.38,
+"lb"
+],
+"Sam's Club|Fish|member s mark skin on atlantic salmon fillet": [
+10.87,
+"lb"
+],
+"Sam's Club|Fish|member s mark tilapia fillet portions frozen": [
+4.21,
+"lb"
+],
+"Sam's Club|Fish|member s mark wild sockeye salmon fillet": [
+14.62,
+"lb"
+],
+"Sam's Club|Milk|member s mark 2 milk": [
+3.77,
+"each"
+],
+"Sam's Club|Milk|member s mark whole milk": [
+3.77,
+"each"
+],
+"Sam's Club|Pork|member s mark bone in pork boston butt": [
+2.48,
+"lb"
+],
+"Sam's Club|Pork|member s mark bone in pork chops": [
+2.52,
+"lb"
+],
+"Sam's Club|Pork|member s mark boneless center cut pork chops": [
+2.98,
+"lb"
+],
+"Sam's Club|Pork|member s mark whole boneless pork loin": [
+2.48,
+"lb"
+],
+"Sam's Club|Pork|member s mark whole pork loin back ribs": [
+3.48,
+"lb"
+],
+"Sam's Club|Pork|member s mark whole pork spare ribs": [
+2.98,
+"lb"
+],
+"Sam's Club|Shrimp|big easy wild gulf large raw shrimp frozen": [
+7.99,
+"lb"
+],
+"Sam's Club|Shrimp|member s mark jumbo cooked shrimp frozen": [
+9.48,
+"lb"
+],
+"Sam's Club|Shrimp|member s mark jumbo raw ez peel shrimp 21 frozen": [
+5.99,
+"lb"
+],
+"Sam's Club|Shrimp|member s mark jumbo raw shrimp 21 frozen": [
+8.48,
+"lb"
+],
+"Sam's Club|Shrimp|member s mark large raw shrimp 31 frozen": [
+6.99,
+"lb"
+],
+"Sam's Club|Shrimp|member s mark medium cooked shrimp frozen": [
+8.23,
+"lb"
+],
+"Sam's Club|Turkey|jennie o 93 7 ground turkey 2": [
+4.55,
+"lb"
+],
+"Sprouts|Beef|sprouts all natural grain fed 85 lean or grain fed 93 lean ground beef": [
+8.99,
+"lb"
+],
+"Sprouts|Chicken|force of nature ground chicken": [
+9.99,
+"lb"
+],
+"Sprouts|Chicken|sprouts marinated chicken wings": [
+4.99,
+"lb"
+],
+"Sprouts|Eggs|sprouts organic pasture raised eggs": [
+9.99,
+"each"
+],
+"Sprouts|Fish|sprouts wild caught mahi mahi fillets": [
+8.99,
+"lb"
+],
+"Sprouts|Shrimp|wild pat wild caught peeled deveined raw red argentine shrimp": [
+11.99,
+"lb"
+],
+"Super 1 Foods|Bacon & sausage|brookshire s beef smoked sausage": [
+4.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|brookshire s smoked sausage": [
+4.47,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|brookshire s smoked sausage or bratwurst": [
+4.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|eckrich smoked sausage or smok y sausage links": [
+2.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|john morrell sliced bacon": [
+4.47,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|mild sausage patty": [
+4.47,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|smithfield anytime favorites sliced quarter boneless ham": [
+7.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|smithfield bacon": [
+3.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|smithfield premium sausage": [
+2.97,
+"each"
+],
+"Super 1 Foods|Bacon & sausage|tony chachere s smoked sausage or boudin": [
+3.97,
+"each"
+],
+"Super 1 Foods|Beef|beef brisket": [
+3.97,
+"lb"
+],
+"Super 1 Foods|Beef|super pack boneless round rump roast": [
+5.97,
+"lb"
+],
+"Super 1 Foods|Chicken|brookshire s frozen chicken": [
+7.97,
+"each"
+],
+"Super 1 Foods|Chicken|super 1 foods chicken thighs or drumsticks": [
+0.97,
+"lb"
+],
+"Super 1 Foods|Chicken|tyson chicken wing sections": [
+1.47,
+"lb"
+],
+"Super 1 Foods|Crab & crawfish|louisiana select crawfish tail meat": [
+11.97,
+"each"
+],
+"Super 1 Foods|Eggs|brookshire s large eggs": [
+0.97,
+"each"
+],
+"Super 1 Foods|Pork|brookshire s baby back pork ribs": [
+11.97,
+"each"
+],
+"Super 1 Foods|Pork|hormel always tender pork butt roast": [
+1.47,
+"lb"
+],
+"Super 1 Foods|Pork|super pack boneless pork chops": [
+2.97,
+"lb"
+],
+"Super 1 Foods|Shrimp|gulf jumbo shrimp": [
+6.97,
+"lb"
+],
+"Super 1 Foods|Shrimp|jumbo gulf shrimp": [
+7.97,
+"lb"
+],
+"Super 1 Foods|Shrimp|louisiana select wild caught gulf shrimp": [
+4.97,
+"each"
+],
+"Walmart|Bacon & sausage|eckrich skinless smoked sausage": [
+3.46,
+"each"
+],
+"Walmart|Bacon & sausage|great value hickory smoked bacon": [
+4.24,
+"each"
+],
+"Walmart|Beef|80 20 ground beef chuck roll": [
+4.99,
+"lb"
+],
+"Walmart|Beef|93 7 lean ground beef roll": [
+7.97,
+"lb"
+],
+"Walmart|Beef|marketside organic grass fed 93 7 ground beef": [
+8.27,
+"lb"
+],
+"Walmart|Chicken|covington farms chicken leg quarters bag": [
+0.6,
+"lb"
+],
+"Walmart|Chicken|freshness guaranteed chicken drumsticks bag": [
+1.19,
+"lb"
+],
+"Walmart|Eggs|great value large white eggs": [
+1.67,
+"each"
+],
+"Walmart|Fish|great value frozen catfish fillets bag": [
+6.57,
+"lb"
+],
+"Walmart|Fish|great value frozen swai fillets bag": [
+3.74,
+"lb"
+],
+"Walmart|Fish|great value frozen tilapia fillets bag": [
+4.43,
+"lb"
+],
+"Walmart|Fish|marketside atlantic salmon portions bag frozen": [
+10.97,
+"lb"
+],
+"Walmart|Milk|great value 2 milk": [
+3.32,
+"each"
+],
+"Walmart|Milk|great value organic whole milk": [
+7.87,
+"each"
+],
+"Walmart|Milk|great value whole milk": [
+3.32,
+"each"
+],
+"Walmart|Milk|hiland whole milk": [
+5.72,
+"each"
+],
+"Walmart|Milk|horizon organic whole milk": [
+9.97,
+"each"
+],
+"Walmart|Milk|organic valley organic 2 milk": [
+9.97,
+"each"
+],
+"Walmart|Shrimp|great value frozen cooked medium peeled deveined shrimp": [
+9.29,
+"lb"
+],
+"Walmart|Shrimp|great value frozen raw jumbo shell on easy peel shrimp bag": [
+8.31,
+"lb"
+],
+"Walmart|Shrimp|great value frozen raw large peeled deveined shrimp bag": [
+7.98,
+"lb"
+],
+"Walmart|Turkey|jennie o 93 7 lean ground turkey": [
+5.56,
+"lb"
+]
+},
+"week": "2026-10-07"
+}
