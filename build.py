@@ -145,7 +145,7 @@ def main():
     script = ('const DATA={mode:"snapshot"};const state={st:"TX"};'
               + html[html.index("const BLS"):html.index("function cmpHtml")])
     js = (script + "\nconst L=" + json.dumps(rows) + ";const t='" + today + "';"
-          "const sc=L.filter(r=>!r[7]||r[7]>t).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8]})}))"
+          "const sc=L.filter(r=>(!r[7]||r[7]>t)&&!/organic/i.test(r[2])).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8]})}))"
           ".filter(x=>x.c&&x.c.pct<=-10).sort((a,b)=>a.c.pct-b.c.pct);const per={},pick=[];"
           "for(const x of sc){if((per[x.r[0]]=(per[x.r[0]]||0)+1)>2)continue;pick.push(x);if(pick.length==5)break}"
           "pick.forEach((x,i)=>console.log(`${i+1}. ${-x.c.pct}% below normal: ${x.r[2]} at ${x.r[1]}, $${x.r[3]}`))")

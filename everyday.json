@@ -759,6 +759,105 @@
    "2026-10-07",
    "",
    null
+  ],
+  [
+   "Milk",
+   "Walmart",
+   "Great Value Organic Whole Milk, 1 gallon",
+   7.87,
+   "each",
+   "everyday price",
+   "2026-10-07",
+   "",
+   null
+  ],
+  [
+   "Milk",
+   "Walmart",
+   "Horizon Organic Whole Milk, 1 gallon",
+   9.97,
+   "each",
+   "everyday price",
+   "2026-10-07",
+   "",
+   null
+  ],
+  [
+   "Milk",
+   "Walmart",
+   "Organic Valley Organic 2% Milk, 1 gallon",
+   9.97,
+   "each",
+   "everyday price",
+   "2026-10-07",
+   "",
+   null
+  ],
+  [
+   "Beef",
+   "Walmart",
+   "Marketside Organic Grass-Fed 93/7 Ground Beef, 1 lb",
+   8.27,
+   "each",
+   "everyday price",
+   "2026-10-07",
+   "",
+   8.27
+  ],
+  [
+   "Chicken",
+   "Sam's Club",
+   "Member's Mark Organic Boneless Skinless Chicken Breasts",
+   5.36,
+   "/lb",
+   "sold by weight; a pack runs about $28.14",
+   "2026-10-07",
+   "",
+   5.36
+  ],
+  [
+   "Chicken",
+   "Sam's Club",
+   "Member's Mark Organic Boneless Skinless Chicken Thighs",
+   5.36,
+   "/lb",
+   "sold by weight; a pack runs about $27.34",
+   "2026-10-07",
+   "",
+   5.36
+  ],
+  [
+   "Beef",
+   "Sam's Club",
+   "Member's Mark Organic Grass-Fed 85/15 Ground Beef",
+   6.58,
+   "/lb",
+   "sold by weight; a pack runs about $22.37",
+   "2026-10-07",
+   "",
+   6.58
+  ],
+  [
+   "Eggs",
+   "Sam's Club",
+   "Member's Mark Organic Cage-Free Large Brown Eggs, 2 dozen",
+   8.22,
+   "each",
+   "$4.11 a dozen",
+   "2026-10-07",
+   "",
+   null
+  ],
+  [
+   "Eggs",
+   "Sam's Club",
+   "Member's Mark Pasture-Raised Organic Large Brown Eggs, 1.5 dozen",
+   6.57,
+   "each",
+   "$4.38 a dozen",
+   "2026-10-07",
+   "",
+   null
   ]
  ]
 }
