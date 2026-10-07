@@ -694,7 +694,7 @@ async function fetchZipDeals(zip){
   }));
   const rows = [], seen = new Set(), starts = {};
   for (const it of items.values()) {
-    const name = (it.name || "").replace(/�/g, "").trim(), price = it.current_price ?? null, story = it.sale_story;
+    const name = (it.name || "").replace(/\uFFFD/g, "").trim(), price = it.current_price ?? null, story = it.sale_story;
     if (!name || SKIP.test(name)) continue;
     const cat = categoryOf(name);
     if (!cat || (price == null && !/buy one|% off|bogo/i.test(story || ""))) continue;
