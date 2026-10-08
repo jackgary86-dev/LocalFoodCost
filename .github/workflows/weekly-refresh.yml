@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Check the ad-reading rules
+        run: python -m unittest discover -s tests
       - name: Rebuild index.html from this week's ads
         run: python -I build.py
       - name: Check the page script still parses

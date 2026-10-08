@@ -10,7 +10,7 @@ This week's grocery deals in Longview, TX (ZIP 75601), as a phone-friendly web p
 - **Store distance**: each deal shows how far the nearest location is, with its address. A "Stores within" setting (default 15 miles) hides chains with no location inside it, and "Show anyway" brings them back. Locations come from OpenStreetMap; Longview's are saved in the page by the weekly build, other ZIPs look them up live.
 - **Package sizes and conditions** read from each ad's description: sizes give a price per pound, and badges show coupons, store cards, limits and must-buy deals. A filter hides deals that need a coupon, card or membership.
 - **Any ZIP code**: type a ZIP and press "Update prices" to load that area's weekly ads.
-- A shopping list that totals your trip by store (saved in your browser).
+- **Shopping list**: tick deals to build a trip grouped by store, nearest first, with each item's conditions, an estimate of how much you save against normal prices, and a **Copy list** button (opens the share sheet on phones). Saved in your browser.
 
 ## Where the prices come from
 
@@ -28,6 +28,7 @@ Stores whose ads list ZIP 75601 but that have no Longview location (H-E-B, Sprin
 - `everyday.json`: everyday prices collected from store websites.
 - `history/`: one file per ad week (`YYYY-MM-DD.json`) with each item's price, written by `build.py`. The page gets the last 26 weeks for the items it shows.
 - `verified.json`: corrections from checking store websites by hand (package sizes, regular prices, mismatches). `build.py` applies them only for the ad week they were checked, so they drop off when the next ad starts.
-- `.github/workflows/weekly-refresh.yml`: runs `build.py` every Wednesday and commits the result.
+- `tests/test_build.py`: checks the rules `build.py` uses to read ads (food types, package sizes, coupons and limits). Run `python -m unittest discover -s tests`.
+- `.github/workflows/weekly-refresh.yml`: runs the tests and `build.py` every Wednesday and commits the result.
 
 Prices are a snapshot. Check the store's own ad before you shop.
