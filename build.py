@@ -7,6 +7,7 @@ into index.html as the LONGVIEW and WEEK_OF constants. Prints the new Top 5.
 Usage: python -I build.py
 """
 import collections
+import concurrent.futures
 import datetime as dt
 import json
 import pathlib
@@ -33,7 +34,7 @@ SKIP = re.compile(
     r"cone|nestl|jerky|stew|beans|rinds|franks|vienna|meal|kit|deveiner|tinned|chunk|pasta|ravioli|fried rice|"
     r"lo mein|tso|cake|coffee|protein|shake|chowder|lunchmeat|bites|toppers|nuggets|patties|strips|tenders|"
     r"any.tizers|popcorn|fully cooked|deli|pulled|fried chicken|burgers|steam|breaded|battered|tempura|"
-    r"marinated fish|cream of|macaroni|steak-umm|filet mignon|primo taglio|crumbled|smart way|yogurt|"
+    r"marinated fish|cheap chicken|cream of|macaroni|steak-umm|filet mignon|primo taglio|crumbled|smart way|yogurt|"
     r"cheese|butter|sushi|salad|cajun fettucine|impossible|beyond meat", re.I)
 
 
@@ -94,12 +95,6 @@ def flipp_rows():
         post = (it.get("post_price_text") or "").lower()
         unit = "/lb" if re.search(r"\blb", post) else ("each" if re.search(r"\bea", post) else "")
         notes = []
-        if "card" in post:
-            notes.append("with store card")
-        if "digital coupon" in post:
-            notes.append("with digital coupon")
-        elif "coupon" in post:
-            notes.append("with coupon")
         if story:
             notes.append(story.strip().capitalize() if price is None else story.strip().lower())
         if it.get("original_price"):
@@ -113,9 +108,123 @@ def flipp_rows():
         seen.add(key)
         rows.append([cat, store, name, price, unit, "; ".join(notes), it["valid_from"][:10], it["valid_to"][:10],
                      price if unit == "/lb" else None,
-                     f"https://flipp.com/en-us/longview-tx/item/{it['id']}?postal_code={ZIP}"])
+                     f"https://flipp.com/en-us/longview-tx/item/{it['id']}?postal_code={ZIP}",
+                     None, None, ad_conditions(it, None)])
+    enrich_from_details(rows, {r[9]: iid for r, iid in zip(rows, (int(re.search(r"/item/(\d+)", r[9]).group(1)) for r in rows))})
     starts = collections.Counter(r[6] for r in rows)
     return rows, starts
+
+
+# ---------- Deal conditions and package sizes from the ad ----------
+LIMIT = re.compile(r"limit\s+(\d+(?:\.\d+)?)\s*(lbs?|pkgs?|packages?|items?|per|each|with)?", re.I)
+MUST_BUY = re.compile(r"(?:must buy|when you buy|buy)\s+(\d+)", re.I)
+PURCHASE = re.compile(r"with (?:a |an )?(?:additional )?\$(\d+)(?:\.\d\d)? (?:or more )?purchase", re.I)
+
+
+def ad_conditions(it, detail):
+    """Short labels for what a deal requires: coupons, store cards, limits, multi-buys."""
+    post = (it.get("post_price_text") or "").lower()
+    pre = (it.get("pre_price_text") or "").lower()
+    story = (it.get("sale_story") or "").lower()
+    disc = ((detail or {}).get("disclaimer_text") or "")
+    out = []
+    if (detail or {}).get("display_type") == 25:
+        out.append("Coupon")
+    if "digital coupon" in post or "digital coupon" in story:
+        out.append("Digital coupon")
+    elif "coupon" in post or "coupon" in story:
+        out.append("Coupon")
+    if "card" in post:
+        out.append("Store card")
+    if "buy one, get one" in story or "bogo" in story or "buy 1, get 1" in story:
+        out.append("Buy one, get one")
+    m = re.match(r"(\d+)\s*(?:for|/)", pre)
+    if m and int(m.group(1)) > 1:
+        out.append(f"Price for {m.group(1)}")
+    for src in (disc, story):
+        m = MUST_BUY.search(src)
+        if m and int(m.group(1)) > 1:
+            out.append(f"Must buy {m.group(1)}")
+        m = PURCHASE.search(src)
+        if m:
+            out.append(f"With ${m.group(1)} purchase")
+    m = LIMIT.search(disc)
+    if m:
+        what = (m.group(2) or "").lower()
+        what = {"lb": "lbs", "pkg": "pkgs", "package": "pkgs", "packages": "pkgs", "item": "items"}.get(what, what)
+        out.append(f"Limit {m.group(1)} {what}".strip() if what in ("lbs", "pkgs", "items") else f"Limit {m.group(1)}")
+    seen, uniq = set(), []
+    for c in out:
+        if c not in seen and not (c == "Coupon" and "Digital coupon" in seen):
+            seen.add(c)
+            uniq.append(c)
+    return uniq
+
+
+SIZE_RANGE = re.compile(r"\d+(?:\.\d+)?\s*(?:-|to)\s*\d+(?:\.\d+)?\s*(?:oz|lb|lbs|pound)", re.I)
+OZ = re.compile(r"(?<![\d./$-])(\d+(?:\.\d+)?)\s*(?:-\s*)?(?:oz|ounce)s?\b(?!\s*(?:serving|per))", re.I)
+LB = re.compile(r"(?<![\d./$-])(\d+(?:\.\d+)?)\s*(?:-\s*)?(?:lb|lbs|pound)s?\.?\b", re.I)
+CT = re.compile(r"(?<![\d./-])(\d+)\s*(?:ct|count)\b", re.I)
+DOZ = re.compile(r"(?<![\d./-])(\d+(?:\.\d+)?)\s*dozen|\bdozen\b", re.I)
+
+
+def ad_size(cat, name, desc):
+    """The package size an ad states, as (label, pounds); pounds is None when it isn't a weight."""
+    text = f"{name} {desc or ''}"
+    if SIZE_RANGE.search(text):
+        return None, None  # "12-16 oz" style ranges can't give one price per pound
+    if cat == "Eggs":
+        m = CT.search(text)
+        if m:
+            return f"{m.group(1)} ct", None
+        m = DOZ.search(text)
+        if m:
+            return f"{m.group(1) or 1} dozen", None
+        return None, None
+    if cat == "Milk":
+        if re.search(r"half[- ]gallon|1/2 gal", text, re.I):
+            return "half gallon", None
+        if re.search(r"\bgal(?:lon)?\b", text, re.I):
+            return "1 gallon", None
+        return None, None
+    weights = {round(float(v) / 16, 4) for v in OZ.findall(text) if "fl" not in text.lower()} | \
+              {round(float(v), 4) for v in LB.findall(text)}
+    weights = {w for w in weights if 0.1 <= w <= 40}
+    if len(weights) != 1:
+        return None, None  # no size, or several different sizes on one ad
+    lbs = weights.pop()
+    oz = lbs * 16
+    label = f"{lbs:g} lb" if lbs >= 1 and (lbs * 4).is_integer() else f"{round(oz, 1):g} oz"
+    return label, lbs
+
+
+def enrich_from_details(rows, ids):
+    """Fetch each ad item's detail (description, disclaimer, coupon flag) and add sizes and conditions."""
+    def fetch(iid):
+        try:
+            return iid, get_json(f"https://backflipp.wishabi.com/flipp/items/{iid}").get("item") or {}
+        except Exception:
+            return iid, {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+        details = dict(pool.map(fetch, set(ids.values())))
+    sized = conds = 0
+    for r in rows:
+        d = details.get(ids.get(r[9]), {})
+        if not d:
+            continue
+        extra = ad_conditions({"post_price_text": None, "pre_price_text": None, "sale_story": None}, d)
+        for c in extra:
+            if c not in r[12]:
+                r[12].append(c)
+                conds += 1
+        if r[3] is not None and r[4] != "/lb":
+            label, lbs = ad_size(r[0], r[2], d.get("description"))
+            if label:
+                r[11] = label
+                if lbs:
+                    r[8] = round(r[3] / lbs, 2)
+                sized += 1
+    print(f"Ad details: {len(details)} fetched, {sized} package sizes found, {conds} conditions added.")
 
 
 SIZE_WORDS = re.compile(r"\b\d+(?:\.\d+)?\s*(?:oz|lb|lbs|ct|count|pk|pack|gal|gallon|dozen)\b", re.I)
@@ -166,7 +275,8 @@ def history_for(rows):
 
 
 def apply_verified(rows, week_start):
-    """Apply hand-checked corrections from verified.json when they're for this ad week."""
+    """Apply hand-checked corrections from verified.json when they're for this ad week.
+    Runs after the ad sizes, so a hand check wins over a size read from the description."""
     path = HERE / "verified.json"
     if not path.exists():
         return 0
@@ -199,9 +309,11 @@ def main():
     rows = flipp + keep
     start = starts.most_common(1)[0][0]
     applied = apply_verified(rows, start)
-    for r in rows:  # every row gets [.. url, key]; everyday rows have no ad link
-        r.extend([None] * (10 - len(r)))
-        r[10:] = [item_key(r)]
+    for r in rows:  # rows: [.. url, key, size, conditions]; everyday rows have no ad link
+        r.extend([None] * (13 - len(r)))
+        r[10] = item_key(r)
+        if r[12] is None:
+            r[12] = ["Membership"] if r[1] == "Sam's Club" else []
     save_history(rows, start)
     history = history_for(rows)
     end = (dt.date.fromisoformat(start) + dt.timedelta(days=6)).isoformat()

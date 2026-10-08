@@ -13,8 +13,8 @@
 "lb"
 ],
 "ALDI|Turkey|kirkwood fresh 93 lean turkey": [
-4.89,
-"each"
+4.08,
+"lb"
 ],
 "Albertsons|Beef|fresh 80 lean ground beef": [
 3.99,
@@ -40,10 +40,6 @@
 1.27,
 "lb"
 ],
-"Albertsons|Chicken|cheap chicken": [
-5.99,
-"each"
-],
 "Albertsons|Chicken|fresh diced boneless chicken breast": [
 5.99,
 "lb"
@@ -57,8 +53,8 @@
 "each"
 ],
 "Albertsons|Fish|fresh atlantic salmon portions": [
-4.99,
-"each"
+15.97,
+"lb"
 ],
 "Albertsons|Fish|fresh whole atlantic salmon fillets waterfront bistro extra jumbo raw shrimp 16 or rock crab clusters": [
 6.99,
@@ -78,19 +74,19 @@
 ],
 "Brookshire's|Bacon & sausage|brookshire s bacon": [
 4.99,
-"each"
+"lb"
 ],
 "Brookshire's|Bacon & sausage|brookshire s italian sausage or bratwurst": [
-4.99,
-"each"
+4.44,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|brookshire s smoked sausage": [
-3.99,
-"each"
+5.32,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|brookshire s thick cut bacon": [
-7.99,
-"each"
+5.33,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|earl campbell s smoked sausage or hot link": [
 4.97,
@@ -102,35 +98,35 @@
 ],
 "Brookshire's|Bacon & sausage|hill s premium meats ground pork sausage or mexican style chorizo": [
 3.99,
-"each"
+"lb"
 ],
 "Brookshire's|Bacon & sausage|john morrell sliced bacon": [
-3.49,
-"each"
+4.65,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|johnsonville smoked sausage": [
-3.49,
-"each"
+4.14,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|smithfield anytime favorites sliced quarter boneless ham": [
-7.99,
-"each"
+5.33,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|thick sliced bacon": [
-14.99,
-"each"
+5.0,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|tony chachere s smoked sausage or boudin": [
-4.49,
-"each"
+5.99,
+"lb"
 ],
 "Brookshire's|Bacon & sausage|whataburger sausage": [
 4.99,
-"each"
+"lb"
 ],
 "Brookshire's|Beef|93 7 lean ground beef": [
 6.99,
-"each"
+"lb"
 ],
 "Brookshire's|Beef|bone in ribeye steak or boneless new york strip steak": [
 16.99,
@@ -149,12 +145,12 @@
 "each"
 ],
 "Brookshire's|Chicken|brookshire s frozen chicken": [
-7.99,
-"each"
+3.2,
+"lb"
 ],
 "Brookshire's|Crab & crawfish|cold water lobster tail": [
-6.99,
-"each"
+27.96,
+"lb"
 ],
 "Brookshire's|Eggs|brookshire s large cage free eggs": [
 1.99,
@@ -174,7 +170,7 @@
 ],
 "Brookshire's|Shrimp|premium extra large cooked shrimp": [
 7.99,
-"each"
+"lb"
 ],
 "Dollar General|Bacon & sausage|eckrich skinless smoked sausage": [
 3.95,
@@ -237,8 +233,8 @@
 "lb"
 ],
 "FRESH by Brookshire's|Crab & crawfish|cold water lobster tail": [
-6.99,
-"each"
+27.96,
+"lb"
 ],
 "FRESH by Brookshire's|Crab & crawfish|snow crab clusters": [
 13.99,
@@ -249,12 +245,12 @@
 "each"
 ],
 "Kroger|Bacon & sausage|simple truth bacon": [
-5,
-"each"
+6.67,
+"lb"
 ],
 "Kroger|Bacon & sausage|wright smoked sausage links": [
-4.99,
-"each"
+6.65,
+"lb"
 ],
 "Kroger|Beef|beef brisket": [
 3.99,
@@ -265,12 +261,12 @@
 "lb"
 ],
 "Kroger|Beef|simple truth organic grass fed 90 lean ground beef": [
-25,
-"each"
+8.33,
+"lb"
 ],
 "Kroger|Chicken|just bare frozen chicken": [
-14.99,
-"each"
+6.66,
+"lb"
 ],
 "Kroger|Chicken|tyson frozen chicken": [
 5.99,
@@ -285,8 +281,8 @@
 "lb"
 ],
 "Kroger|Fish|kroger wild pink salmon fillets": [
-11.99,
-"each"
+6.0,
+"lb"
 ],
 "Kroger|Milk|simple truth organic milk": [
 3.99,
@@ -297,8 +293,8 @@
 "lb"
 ],
 "Kroger|Pork|smithfield marinated pork loin filet": [
-7,
-"each"
+4.87,
+"lb"
 ],
 "Kroger|Pork|whole pork tenderloin": [
 2.99,
@@ -517,44 +513,44 @@
 "lb"
 ],
 "Super 1 Foods|Bacon & sausage|brookshire s beef smoked sausage": [
-4.97,
-"each"
+6.63,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|brookshire s smoked sausage": [
-4.47,
-"each"
+5.96,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|brookshire s smoked sausage or bratwurst": [
-4.97,
-"each"
+4.42,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|eckrich smoked sausage or smok y sausage links": [
 2.97,
 "each"
 ],
 "Super 1 Foods|Bacon & sausage|john morrell sliced bacon": [
-4.47,
-"each"
+5.96,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|mild sausage patty": [
-4.47,
-"each"
+2.65,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|smithfield anytime favorites sliced quarter boneless ham": [
-7.97,
-"each"
+5.31,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|smithfield bacon": [
-3.97,
-"each"
+5.29,
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|smithfield premium sausage": [
 2.97,
-"each"
+"lb"
 ],
 "Super 1 Foods|Bacon & sausage|tony chachere s smoked sausage or boudin": [
-3.97,
-"each"
+5.29,
+"lb"
 ],
 "Super 1 Foods|Beef|beef brisket": [
 3.97,
@@ -565,8 +561,8 @@
 "lb"
 ],
 "Super 1 Foods|Chicken|brookshire s frozen chicken": [
-7.97,
-"each"
+3.19,
+"lb"
 ],
 "Super 1 Foods|Chicken|super 1 foods chicken thighs or drumsticks": [
 0.97,
@@ -577,16 +573,16 @@
 "lb"
 ],
 "Super 1 Foods|Crab & crawfish|louisiana select crawfish tail meat": [
-11.97,
-"each"
+15.96,
+"lb"
 ],
 "Super 1 Foods|Eggs|brookshire s large eggs": [
 0.97,
 "each"
 ],
 "Super 1 Foods|Pork|brookshire s baby back pork ribs": [
-11.97,
-"each"
+5.99,
+"lb"
 ],
 "Super 1 Foods|Pork|hormel always tender pork butt roast": [
 1.47,
@@ -605,8 +601,8 @@
 "lb"
 ],
 "Super 1 Foods|Shrimp|louisiana select wild caught gulf shrimp": [
-4.97,
-"each"
+6.63,
+"lb"
 ],
 "Walmart|Bacon & sausage|eckrich skinless smoked sausage": [
 3.46,
