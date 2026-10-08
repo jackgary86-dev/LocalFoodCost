@@ -14,6 +14,7 @@ import pathlib
 import re
 import statistics
 import subprocess
+import time
 import urllib.parse
 import urllib.request
 
@@ -274,6 +275,40 @@ def history_for(rows):
     return {"weeks": weeks, "items": items}
 
 
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
+            "https://overpass.private.coffee/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+ZIP_LAT, ZIP_LON = 32.5178, -94.7303  # ZIP 75601 (Longview, TX)
+SHOP_TYPES = "supermarket|wholesale|variety_store|department_store|health_food|grocery|discount|butcher|seafood"
+
+
+def store_locations():
+    """Grocery-type stores within ~31 miles of Longview from OpenStreetMap, trying each Overpass server
+    in turn. Returns None if all fail, so the page keeps last week's locations."""
+    q = (f'[out:json][timeout:60];nwr["shop"~"^({SHOP_TYPES})$"]["name"]'
+         f'(around:50000,{ZIP_LAT},{ZIP_LON});out center tags;')
+    body = urllib.parse.urlencode({"data": q}).encode()
+    for attempt in range(2):
+        for server in OVERPASS:
+            try:
+                req = urllib.request.Request(server, data=body, headers={**UA, "User-Agent": "LocalFoodCost/1.0 (github.com/jackgary86-dev/LocalFoodCost)"})
+                with urllib.request.urlopen(req, timeout=90) as r:
+                    els = json.load(r).get("elements", [])
+                places = []
+                for e in els:
+                    g, t = e.get("center") or e, e.get("tags") or {}
+                    if g.get("lat") is None:
+                        continue
+                    places.append({"lat": round(g["lat"], 5), "lon": round(g["lon"], 5),
+                                   "tags": {k: t[k] for k in ("brand", "name", "brand:en") if t.get(k)},
+                                   "addr": " ".join(x for x in (t.get("addr:housenumber"), t.get("addr:street")) if x)})
+                if places:
+                    return {"zip": ZIP, "at": dt.date.today().isoformat(), "places": places}
+            except Exception as e:
+                print(f"warning: {server} failed: {e}")
+        time.sleep(20)
+    return None
+
+
 def apply_verified(rows, week_start):
     """Apply hand-checked corrections from verified.json when they're for this ad week.
     Runs after the ad sizes, so a hand check wins over a size read from the description."""
@@ -324,6 +359,15 @@ def main():
     html, n1 = re.subn(r"const LONGVIEW = \[.*?\];", lambda m: "const LONGVIEW = " + json.dumps(rows, ensure_ascii=False) + ";",
                        html, count=1, flags=re.S)
     html, n2 = re.subn(r"const WEEK_OF = \{.*?\};", lambda m: "const WEEK_OF = " + json.dumps(week) + ";", html, count=1)
+    locs = store_locations()
+    if locs:
+        locs_js = "const STORE_LOCS = " + json.dumps(locs, ensure_ascii=False) + ";"
+        html, n4 = re.subn(r"const STORE_LOCS = \{.*?\};", lambda m: locs_js, html, count=1, flags=re.S)
+        if n4 == 0:
+            html = html.replace("const WEEK_OF = " + json.dumps(week) + ";", "const WEEK_OF = " + json.dumps(week) + ";\n" + locs_js, 1)
+        print(f"Store locations: {len(locs['places'])} places from OpenStreetMap.")
+    else:
+        print("Store locations: every map server failed; keeping last week's locations.")
     hist_js = "const HISTORY = " + json.dumps(history, ensure_ascii=False) + ";"
     html, n3 = re.subn(r"const HISTORY = \{.*?\};", lambda m: hist_js, html, count=1, flags=re.S)
     if n3 == 0:
@@ -341,7 +385,7 @@ def main():
               "const state={st:'TX'};const money=n=>'$'+n.toFixed(2);"
               + html[html.index("const BLS"):html.index("function cmpHtml")])
     js = (script + "\nconst L=" + json.dumps(rows) + ";const t='" + today + "';"
-          "const sc=L.filter(r=>(!r[7]||r[7]>t)&&!/organic/i.test(r[2])).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8],key:r[10]})}))"
+          "const sc=L.filter(r=>(!r[7]||r[7]>t)&&!/organic/i.test(r[2])).map(r=>({r,c:normalFor({name:r[2],price:r[3],perLb:r[8],key:r[10],size:r[11]})}))"
           ".filter(x=>x.c&&x.c.pct<=-10).sort((a,b)=>a.c.pct-b.c.pct);const per={},pick=[];"
           "for(const x of sc){if((per[x.r[0]]=(per[x.r[0]]||0)+1)>2)continue;pick.push(x);if(pick.length==5)break}"
           "pick.forEach((x,i)=>console.log(`${i+1}. ${-x.c.pct}% below normal: ${x.r[2]} at ${x.r[1]}, $${x.r[3]}`))")
