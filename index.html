@@ -107,6 +107,10 @@ footer.credit{border-top:1px solid var(--line);padding-top:16px;font-size:13px;c
 .usually{display:inline-block;margin-top:4px;font-size:11.5px;color:var(--muted)}
 .chip.cond{display:inline-block;margin:4px 6px 0 0;background:var(--warn-soft);color:var(--warn)}
 .plain-toggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;margin-left:6px}
+.distbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px}
+.distbar select{padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+.far-note{color:var(--muted)}
+.far-note button{font:inherit;font-weight:700;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
 .deal-link{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:var(--accent);text-decoration:none}
 .deal-link:hover{text-decoration:underline}
 .addr{display:block;font-weight:500;font-size:11.5px;color:var(--accent);text-decoration:none;white-space:normal;max-width:24ch;line-height:1.35;margin-top:2px}
@@ -230,6 +234,11 @@ aside.trip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);backgro
       <label class="plain-toggle"><input type="checkbox" id="plainOnly"> Hide deals that need a coupon, store card or membership</label>
     </div>
     <div class="storebar" id="storeBar" role="group" aria-label="Stores"></div>
+    <div class="distbar">
+      <label for="radiusSel">Stores within</label>
+      <select id="radiusSel"><option value="5">5 miles</option><option value="10">10 miles</option><option value="15">15 miles</option><option value="25">25 miles</option><option value="30">30 miles</option></select>
+      <span id="farNote" class="far-note"></span>
+    </div>
     <div class="ptable-wrap"><table class="ptable"><thead><tr><th>Store</th><th>Item</th><th class="p">Price</th><th></th></tr></thead><tbody id="ptBody"></tbody></table></div>
     <div class="week-meta" id="metaSnap">
       <span>Sources, collected <span id="collectedOn">Oct 7, 2026</span>: weekly ads listed on Flipp for ZIP 75601; walmart.com set to the Longview E Loop 281 Supercenter (everyday online prices, which can differ slightly from the shelf); dollargeneral.com online prices (may vary by store); samsclub.com set to the Longview club #6422 (membership required; meat sold by weight is shown per pound); the Natural Grocers October Health Hotline flyer.</span>
@@ -327,7 +336,7 @@ const ZIP3_STATES = [[5,5,"NY"],[10,27,"MA"],[28,29,"RI"],[30,38,"NH"],[39,49,"M
 const stateForZip = zip => { const n = parseInt(zip.slice(0,3), 10); const r = ZIP3_STATES.find(([a,b]) => n >= a && n <= b); return r ? r[2] : null; };
 
 /* Town names come from api.zippopotam.us and are remembered in this browser. */
-const ZIP_CACHE_KEY = "zip-towns-v1";
+const ZIP_CACHE_KEY = "zip-towns-v2";
 let zipTowns = {};
 try { zipTowns = JSON.parse(localStorage.getItem(ZIP_CACHE_KEY)) || {}; } catch {}
 async function lookupZip(zip){
@@ -337,7 +346,7 @@ async function lookupZip(zip){
     if (!r.ok) return r.status === 404 ? { missing:true } : null;
     const j = await r.json(), pl = j.places && j.places[0];
     if (!pl) return { missing:true };
-    zipTowns[zip] = { city: pl["place name"], st: pl["state abbreviation"] };
+    zipTowns[zip] = { city: pl["place name"], st: pl["state abbreviation"], lat: +pl.latitude, lon: +pl.longitude };
     try { localStorage.setItem(ZIP_CACHE_KEY, JSON.stringify(zipTowns)); } catch {}
     return zipTowns[zip];
   } catch { return null; }
@@ -565,14 +574,14 @@ function dealLink(w){
   return { href:f(q), label: w.store === "Natural Grocers" ? "View the flyer" : `Find it on ${w.store}'s site` };
 }
 const linkHtml = (w) => { const l = dealLink(w); return l ? `<a class="deal-link" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>` : ""; };
-const view = { cat:"Shrimp", off:new Set(), sort:"price", kind:"regular", plain:false };
+const view = { cat:"Shrimp", off:new Set(), sort:"price", kind:"regular", plain:false, showFar:false };
 /* "Plain" deals: no coupon, store card, membership or must-buy requirement. Limits are fine. */
 const NEEDS = /coupon|store card|membership|must buy|price for|purchase/i;
 const isPlain = w => !(w.conds || []).some(c => NEEDS.test(c));
 const condHtml = w => (w.conds || []).map(c => `<span class="chip cond">${esc(c)}</span>`).join("");
 const sizeHtml = w => w.size ? `<span class="usually">Size ${esc(w.size)} (from the ad)</span>` : "";
 const isOrganic = w => /\borganic\b/i.test(w.name);
-const inKind = w => (view.kind === "organic") === isOrganic(w) && (!view.plain || isPlain(w));
+const inKind = w => (view.kind === "organic") === isOrganic(w) && (!view.plain || isPlain(w)) && storeVisible(w.store);
 const endDate = to => { if (!to) return null; const d = new Date(to+"T00:00:00"); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); };
 
 /* Longview store addresses (Target has a store at 3092 N Eastman Rd but no prices here). */
@@ -591,7 +600,70 @@ const STORE_INFO = {
   "Dollar General": "2800 E Marshall Ave · 1003 N Eastman Rd · 1404 McCann Rd · 2421 Gilmer Rd and 9 more Longview stores",
   "Family Dollar": "1205 E Marshall Ave · 1200 S High St · 935 E Young St · 114 Johnston St · 5401 W Marshall Ave",
 };
+/* ---------- Store distance (OpenStreetMap via the Overpass API) ---------- */
+const LOCS_CACHE = "store-locs-v1", RADIUS_KEY = "store-radius-v1";
+let radiusMi = 15;
+try { radiusMi = +localStorage.getItem(RADIUS_KEY) || 15; } catch {}
+const LOCS = {};   // zip → { status, near: { store: { mi, addr, lat, lon } } }
+const normName = s => (s || "").toLowerCase().replace(/&/g, " and ").replace(/['’.]/g, "").replace(/\(.*?\)/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+const CHAIN_ALIASES = { "super 1 foods": ["super 1 foods", "super one foods"], "sams club": ["sams club"], "fresh by brookshires": ["fresh by brookshires"] };
+const chainKeys = store => { const n = normName(store.replace(/ and discount pharmacy$/i, "")); return CHAIN_ALIASES[n] || [n]; };
+function chainMatches(store, tags){
+  const names = [tags.brand, tags.name, tags["brand:en"]].filter(Boolean).map(normName);
+  return chainKeys(store).some(k => names.some(nm => nm === k || nm.startsWith(k + " ")));
+}
+const milesBetween = (a, b, c, d) => {
+  const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2;
+  return 3958.8 * 2 * Math.asin(Math.sqrt(x));
+};
+async function ensureLocs(zip){
+  if (LOCS[zip]) return;
+  let cache = {};
+  try { cache = JSON.parse(localStorage.getItem(LOCS_CACHE)) || {}; } catch {}
+  if (cache[zip] && Date.now() - cache[zip].at < 7 * 864e5) { LOCS[zip] = { status:"ready", places:cache[zip].places }; return; }
+  LOCS[zip] = { status:"loading", places:[] };
+  try {
+    let t = zipTowns[zip];
+    if (!t || t.lat == null) t = await lookupZip(zip);
+    if (!t || t.lat == null) throw new Error("no coordinates");
+    const q = `[out:json][timeout:25];nwr["shop"~"^(supermarket|wholesale|variety_store|department_store|health_food|grocery|discount|butcher|seafood)$"]["name"](around:50000,${t.lat},${t.lon});out center tags;`;
+    const r = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", body:"data=" + encodeURIComponent(q), headers:{ "Content-Type":"application/x-www-form-urlencoded" } });
+    if (!r.ok) throw new Error("overpass " + r.status);
+    const j = await r.json();
+    const places = (j.elements || []).map(e => {
+      const g = e.center || e, tg = e.tags || {};
+      const addr = [tg["addr:housenumber"], tg["addr:street"]].filter(Boolean).join(" ");
+      return { lat:g.lat, lon:g.lon, tags:{ brand:tg.brand, name:tg.name, "brand:en":tg["brand:en"] }, addr, mi: milesBetween(t.lat, t.lon, g.lat, g.lon) };
+    }).filter(p => p.lat != null);
+    LOCS[zip] = { status:"ready", places };
+    cache[zip] = { at:Date.now(), places };
+    for (const k of Object.keys(cache)) if (Date.now() - cache[k].at > 7 * 864e5) delete cache[k];
+    try { localStorage.setItem(LOCS_CACHE, JSON.stringify(cache)); } catch {}
+  } catch { LOCS[zip] = { status:"error", places:[] }; }
+  if (state.zip === zip) renderWeek();
+}
+function nearestStore(store){
+  const L = LOCS[DATA.zip]; if (!L || L.status !== "ready") return null;
+  let best = null;
+  for (const p of L.places) if (chainMatches(store, p.tags) && (!best || p.mi < best.mi)) best = p;
+  return best;
+}
+/* A store's deals show when its nearest location is inside the limit. Longview stores confirmed by hand
+   (STORE_INFO) always show, since the map can lag behind new openings. If locations couldn't load, show everything. */
+function storeVisible(store){
+  if (view.showFar) return true;
+  const L = LOCS[DATA.zip]; if (!L || L.status !== "ready") return true;
+  const n = nearestStore(store);
+  if (n) return n.mi <= radiusMi || (DATA.mode === "snapshot" && !!STORE_INFO[store] && n.mi <= 30);
+  return DATA.mode === "snapshot" && !!STORE_INFO[store];
+}
+
 const mapLink = (store) => {
+  const n = nearestStore(store);
+  if (n) {
+    const label = `${n.mi < 10 ? n.mi.toFixed(1) : Math.round(n.mi)} mi · ${n.addr || (DATA.mode === "snapshot" && STORE_INFO[store] ? STORE_INFO[store].split(" · ")[0].replace(/ \(.*\)$/, "") : "Directions")}`;
+    return `<a class="addr" href="https://www.google.com/maps/search/?api=1&query=${n.lat},${n.lon}" target="_blank" rel="noopener">${esc(label)}</a>`;
+  }
   if (DATA.mode !== "snapshot") {
     const q = encodeURIComponent(`${store} near ${DATA.zip}`);
     return `<a class="addr" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">Find the nearest store</a>`;
@@ -858,8 +930,23 @@ function renderKindBar(){
   $("nOrganic").textContent = org;
   document.querySelectorAll("[data-kind]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === view.kind)));
 }
+function renderFarNote(){
+  const L = LOCS[DATA.zip], el = $("farNote");
+  $("radiusSel").value = String(radiusMi);
+  if (!L || L.status === "loading") { el.textContent = "Finding store locations…"; return; }
+  if (L.status === "error") { el.textContent = "Couldn't load store locations, so every store's deals are shown."; return; }
+  const all = storesOf(WEEK);
+  const saved = view.showFar; view.showFar = false;
+  const hidden = all.filter(s => !storeVisible(s)); view.showFar = saved;
+  if (!hidden.length) { el.textContent = `Every store with deals has a location within ${radiusMi} miles.`; return; }
+  const why = s => { const n = nearestStore(s); return n ? `nearest ${Math.round(n.mi)} mi` : "no location found nearby"; };
+  el.innerHTML = view.showFar
+    ? `Showing ${hidden.length} far-away store${hidden.length === 1 ? "" : "s"} too. <button type="button" id="farToggle">Hide them</button>`
+    : `Hidden: ${hidden.map(s => `${esc(s)} (${why(s)})`).join(", ")}. <button type="button" id="farToggle">Show anyway</button>`;
+}
 function renderWeek(){
   updateZipButton();
+  if (DATA.status === "ready" && !LOCS[DATA.zip]) ensureLocs(DATA.zip);
   renderKindBar();
   const show = DATA.status === "ready";
   $("weekSec").hidden = !show;
@@ -882,12 +969,15 @@ function renderWeek(){
       ? `Price history: ${n} weeks since ${fmtDay(first,{month:"short",day:"numeric",year:"numeric"})}. Items with ${HISTORY_MIN}+ earlier weeks use their own Longview median as "Normal".`
       : `Price history: ${n} week${n === 1 ? "" : "s"} collected since ${fmtDay(first,{month:"short",day:"numeric",year:"numeric"})}. After ${HISTORY_MIN} more weeks, items switch to their own Longview median as "Normal" and show "Lowest in N weeks".`;
   }
+  renderFarNote();
   const vis = WEEK.filter(w => !view.off.has(w.store) && inKind(w));
   $("catTabs").innerHTML = ["All", ...CAT_ORDER].map(c => {
     const n = c === "All" ? vis.length : vis.filter(w => w.cat===c).length;
     return `<button type="button" class="tab" data-cat="${esc(c)}" aria-pressed="${view.cat===c}">${esc(c)}<span class="n num">${n}</span></button>`;
   }).join("");
-  $("storeBar").innerHTML = `<span class="eyebrow">Stores</span>` + WEEK_STORES.map(st =>
+  const dist = s => nearestStore(s)?.mi ?? 999;
+  const shownStores = WEEK_STORES.filter(storeVisible).sort((a,b) => dist(a) - dist(b));
+  $("storeBar").innerHTML = `<span class="eyebrow">Stores</span>` + shownStores.map(st =>
     `<label><input type="checkbox" data-store="${esc(st)}" ${view.off.has(st)?"":"checked"}>${esc(st)}</label>`).join("");
   document.querySelectorAll("[data-sort]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sort === view.sort)));
   const onBoard = new Set(state.deals.map(d => d.src).filter(Boolean));
@@ -920,6 +1010,8 @@ function renderWeek(){
   }
   $("ptBody").innerHTML = html || `<tr><td colspan="4" class="nt">Select at least one store.</td></tr>`;
 }
+$("radiusSel").addEventListener("change", e => { radiusMi = +e.target.value; try { localStorage.setItem(RADIUS_KEY, String(radiusMi)); } catch {} renderWeek(); });
+$("farNote").addEventListener("click", e => { if (e.target.id === "farToggle") { view.showFar = !view.showFar; renderWeek(); } });
 $("plainOnly").addEventListener("change", e => { view.plain = e.target.checked; renderWeek(); });
 $("kindBar").addEventListener("click", e => { const b = e.target.closest("[data-kind]"); if (!b) return; view.kind = b.dataset.kind; view.cat = "All"; renderWeek(); });
 document.querySelector(".sortbar").addEventListener("click", e => { const b = e.target.closest("[data-sort]"); if (!b) return; view.sort = b.dataset.sort; renderWeek(); });
