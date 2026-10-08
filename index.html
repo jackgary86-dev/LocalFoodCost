@@ -572,7 +572,8 @@ function tripText(){
   const by = {};
   picked.forEach(d => (by[d.store] ||= []).push(d));
   const lines = ["Grocery trip"];
-  for (const [s, ds] of Object.entries(by)) {
+  const dist = ds => ds.find(d => d.where?.mi != null)?.where.mi ?? 999;
+  for (const [s, ds] of Object.entries(by).sort((a,b) => dist(a[1]) - dist(b[1]))) {
     const w = ds.find(d => d.where)?.where;
     lines.push("", `${s}${w ? ` (${w.mi != null ? w.mi + " mi, " : ""}${w.addr})` : ""}`);
     for (const d of ds) lines.push(`- ${d.name || d.item}: ${money(d.price)}${d.unit === "lb" ? "/lb" : ""}${(d.conds || []).length ? ` [${d.conds.join(", ")}]` : ""}`);
