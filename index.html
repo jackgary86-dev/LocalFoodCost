@@ -1050,7 +1050,7 @@ function renderWatch(){
     const best = hits.slice().sort((a,b) => key(a) - key(b))[0];
     let body;
     if (!ready) body = `<span class="meta">Prices load when you press Update prices.</span>`;
-    else if (!best) body = `<span class="meta">No deals on this this week.</span>`;
+    else if (!best) body = `<span class="meta">No deals this week.</span>`;
     else {
       const c = normalFor(best);
       const vs = c ? ` · ${c.pct < 0 ? `${-c.pct}% below` : c.pct > 0 ? `${c.pct}% above` : "about"} normal` : "";
