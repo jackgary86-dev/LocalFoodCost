@@ -1,31 +1,23 @@
 {
 "items": {
-"ALDI|Bacon & sausage|appleton farms boneless spiral sliced ham": [
-3.49,
+"ALDI|Beef|fresh black angus bottom round roast": [
+6.49,
 "lb"
 ],
-"ALDI|Bacon & sausage|appleton farms spiral sliced half ham": [
-2.19,
+"ALDI|Beef|fresh organic 85 15 grass fed ground beef": [
+5.99,
 "lb"
 ],
-"ALDI|Bacon & sausage|bulk mild italian sausage": [
-3.29,
+"ALDI|Beef|fresh sirloin tip roast": [
+7.49,
 "lb"
 ],
-"ALDI|Pork|fresh pork belly": [
+"ALDI|Chicken|aldi fan favorites family pack chicken breasts": [
 1.99,
 "lb"
 ],
-"ALDI|Turkey|boneless turkey breast": [
-4.33,
-"lb"
-],
-"ALDI|Turkey|frozen whole turkey": [
-1.27,
-"lb"
-],
-"ALDI|Turkey|plainville fresh organic turkey": [
-3.29,
+"ALDI|Chicken|fresh antibiotic free chicken tenderloins": [
+4.69,
 "lb"
 ],
 "Albertsons|Bacon & sausage|hormel cure 81 smoked spiral half ham": [
@@ -236,9 +228,9 @@
 3.95,
 "each"
 ],
-"Dollar General|Bacon & sausage|eckrich smoked sausage rope 10": [
-3.75,
-"each"
+"Dollar General|Bacon & sausage|smithfield bacon": [
+7.0,
+"lb"
 ],
 "Dollar General|Bacon & sausage|smithfield thick cut bacon": [
 7.67,
@@ -256,8 +248,8 @@
 5.85,
 "lb"
 ],
-"Dollar General|Chicken|drumstick": [
-4,
+"Dollar General|Chicken|roasted chicken rice": [
+1.95,
 "each"
 ],
 "Dollar General|Chicken|tyson boneless skinless chicken breasts frozen": [
@@ -268,6 +260,10 @@
 4.1,
 "each"
 ],
+"Dollar General|Milk|clover valley lactose free milk": [
+3.95,
+"each"
+],
 "Dollar General|Milk|clover valley whole milk": [
 4.1,
 "each"
@@ -276,20 +272,44 @@
 6.67,
 "lb"
 ],
+"FRESH by Brookshire's|Bacon & sausage|boar s head smokemaster beechwood smoked black forest uncured ham": [
+9.99,
+"lb"
+],
 "FRESH by Brookshire's|Bacon & sausage|boar s head sweet slice uncured ham": [
 9.99,
+"lb"
+],
+"FRESH by Brookshire's|Bacon & sausage|brookshire s bacon": [
+3.99,
 "lb"
 ],
 "FRESH by Brookshire's|Bacon & sausage|brookshire s or hormel cure 81 spiral sliced ham": [
 2.49,
 "lb"
 ],
+"FRESH by Brookshire's|Bacon & sausage|brookshire s pork sausage": [
+2.99,
+"lb"
+],
+"FRESH by Brookshire's|Beef|80 20 ground beef": [
+3.99,
+"lb"
+],
 "FRESH by Brookshire's|Beef|beef brisket": [
 4.99,
 "lb"
 ],
+"FRESH by Brookshire's|Beef|cilantro lime bavette steak": [
+10.99,
+"lb"
+],
 "FRESH by Brookshire's|Beef|rib roast": [
 9.99,
+"lb"
+],
+"FRESH by Brookshire's|Beef|star b angus beef boneless chuck roast": [
+6.99,
 "lb"
 ],
 "FRESH by Brookshire's|Crab & crawfish|cold water lobster tail": [
@@ -304,8 +324,20 @@
 8.99,
 "lb"
 ],
+"FRESH by Brookshire's|Milk|fa rlife milk": [
+4.99,
+"each"
+],
+"FRESH by Brookshire's|Pork|pork butt roast": [
+1.49,
+"lb"
+],
 "FRESH by Brookshire's|Shrimp|fresh gulf shrimp": [
 9.99,
+"lb"
+],
+"FRESH by Brookshire's|Turkey|boar s head deep fried turkey breast": [
+11.99,
 "lb"
 ],
 "FRESH by Brookshire's|Turkey|jennie o fresh turkey": [
@@ -366,18 +398,6 @@
 ],
 "Kroger|Fish|fresh atlantic salmon fillets": [
 9.99,
-"lb"
-],
-"Kroger|Milk|kroger milk": [
-2.49,
-"each"
-],
-"Kroger|Pork|pork shoulder roast bone in": [
-1.99,
-"lb"
-],
-"Kroger|Shrimp|kroger extra large cooked shrimp": [
-6.99,
 "lb"
 ],
 "Kroger|Shrimp|kroger medium shrimp tray": [
@@ -696,19 +716,19 @@
 0.87,
 "lb"
 ],
-"Target|Bacon & sausage|select good gather uncured ham": [
+"Target|Bacon & sausage|select good gather bone in uncured ham": [
 1.49,
 "lb"
 ],
-"Target|Bacon & sausage|select oscar mayer bacon": [
-5.49,
+"Target|Bacon & sausage|select market pantry bacon": [
+4.39,
 "each"
 ],
-"Target|Milk|fairlife 52 oz milk": [
-4.79,
+"Target|Milk|good gather 52 oz milk": [
+4.39,
 "each"
 ],
-"Target|Turkey|good gather frozen cook in bag homestyle turkey": [
+"Target|Turkey|good gather cook in bag frozen homestyle turkey": [
 24.99,
 "each"
 ],
